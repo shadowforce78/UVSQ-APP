@@ -44,66 +44,88 @@ def show_schedule(data):
     for widget in window.winfo_children():
         widget.destroy()
 
+    # Configure window grid
+    window.grid_rowconfigure(0, weight=1)
+    window.grid_columnconfigure(0, weight=1)
+
     # Create main frame for schedule
     schedule_frame = ttk.Frame(window)
-    schedule_frame.pack(pady=20, padx=20, fill="both", expand=True)
+    schedule_frame.grid(sticky="nsew", padx=10, pady=10)
 
     # Add back button
     back_button = ttk.Button(schedule_frame, text="Retour", command=show_menu)
-    back_button.pack(pady=(0, 20))
+    back_button.grid(row=0, column=0, columnspan=6, pady=(0, 20), sticky="w")
 
-    # Create scrollable frame for events
-    canvas = ttk.Canvas(schedule_frame)
-    scrollbar = ttk.Scrollbar(schedule_frame, orient="vertical", command=canvas.yview)
-    scrollable_frame = ttk.Frame(canvas)
+    # Create a table-like structure for the schedule
+    days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"]
+    hours = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", 
+             "15:00", "16:00", "17:00", "18:00"]
 
-    scrollable_frame.bind(
-        "<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-    )
+    # Style for headers
+    header_style = {"font": ("Helvetica", 11, "bold"), "padding": 10}
+    
+    # Create time column
+    for i, hour in enumerate(hours):
+        ttk.Label(schedule_frame, text=hour, **header_style).grid(
+            row=i+2, column=0, padx=2, pady=2, sticky="e"
+        )
 
-    canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-    canvas.configure(yscrollcommand=scrollbar.set)
+    # Create day headers
+    for i, day in enumerate(days):
+        ttk.Label(schedule_frame, text=day, **header_style).grid(
+            row=1, column=i+1, padx=2, pady=2, sticky="nsew"
+        )
 
-    # For each event in the schedule
+    # Create empty cells for the grid
+    for row in range(len(hours)):
+        for col in range(len(days)):
+            frame = ttk.Frame(schedule_frame, style="secondary.TFrame")
+            frame.grid(row=row+2, column=col+1, padx=1, pady=1, sticky="nsew")
+            schedule_frame.grid_rowconfigure(row+2, weight=1, minsize=80)
+            schedule_frame.grid_columnconfigure(col+1, weight=1, minsize=150)
+
+    # Populate events
+    colors = ["primary", "info", "success", "warning"]  # Different styles for events
     for event in data:
-        # Create a frame for each event
-        event_frame = ttk.Frame(scrollable_frame, style="Card.TFrame")
-        event_frame.pack(pady=5, padx=10, fill="x")
-
-        # Get event details with default values for missing keys
         elements = {elem["label"]: elem["content"] for elem in event["elements"]}
-
-        # Add event details with safe access
-        ttk.Label(
-            event_frame,
-            text=elements.get("Heure", "Horaire non spécifié"),
-            font=("Helvetica", 10, "bold"),
-        ).pack(anchor="w", padx=5)
-        ttk.Label(
-            event_frame, text=elements.get("Matière", "Matière non spécifiée")
-        ).pack(anchor="w", padx=5)
-
-        if "Personnel" in elements and elements["Personnel"]:
-            ttk.Label(event_frame, text=f"Prof: {elements['Personnel']}").pack(
-                anchor="w", padx=5
+        day = elements.get("Jour", "Jour non spécifié")
+        start_time = elements.get("Heure", "").split(" - ")[0]  # Get start time
+        
+        if day in days and start_time in hours:
+            row = hours.index(start_time) + 2
+            col = days.index(day) + 1
+            
+            # Create event frame with random color
+            event_frame = ttk.Frame(
+                schedule_frame,
+                style=f"{colors[hash(elements.get('Matière', '')) % len(colors)]}.TFrame",
+                padding=5
             )
+            event_frame.grid(row=row, column=col, sticky="nsew", padx=1, pady=1)
+            
+            # Add event details with better formatting
+            ttk.Label(
+                event_frame,
+                text=elements.get('Matière', ''),
+                font=("Helvetica", 10, "bold")
+            ).pack(anchor="w")
+            
+            if "Salle" in elements and elements["Salle"]:
+                ttk.Label(
+                    event_frame,
+                    text=f"🏢 {elements['Salle']}",
+                    font=("Helvetica", 9)
+                ).pack(anchor="w")
+            
+            if "Personnel" in elements and elements["Personnel"]:
+                ttk.Label(
+                    event_frame,
+                    text=f"👤 {elements['Personnel']}",
+                    font=("Helvetica", 9)
+                ).pack(anchor="w")
 
-        if "Salle" in elements and elements["Salle"]:
-            ttk.Label(event_frame, text=f"Salle: {elements['Salle']}").pack(
-                anchor="w", padx=5
-            )
-
-        group = elements.get("Groupe", "Groupe non spécifié")
-        ttk.Label(event_frame, text=f"Groupe: {group}").pack(anchor="w", padx=5)
-
-        event_type = elements.get("Catégorie d'événement", "Type non spécifié")
-        if event_type:
-            ttk.Label(event_frame, text=event_type).pack(anchor="w", padx=5)
-
-        ttk.Separator(scrollable_frame).pack(fill="x", pady=5)
-
-    canvas.pack(side="left", fill="both", expand=True)
-    scrollbar.pack(side="right", fill="y")
+    # Configure scroll region
+    schedule_frame.update_idletasks()
 
 
 window = ttk.Window(themename="superhero")
