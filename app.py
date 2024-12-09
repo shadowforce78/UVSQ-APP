@@ -231,6 +231,7 @@ def show_schedule(data):
             # Afficher les détails de l'événement
             matiere = elements.get('Matière', elements.get('Matières', ''))
             if matiere:
+                # Label pour la matière
                 ttk.Label(
                     event_frame,
                     text=matiere,
@@ -238,26 +239,31 @@ def show_schedule(data):
                     wraplength=140
                 ).pack(fill="x", padx=2, pady=1)
 
+                # Frame horizontal pour les détails
+                details_frame = ttk.Frame(event_frame)
+                details_frame.pack(fill="x", padx=2)
+
+                # Afficher l'heure, la salle et le personnel sur la même ligne
                 ttk.Label(
-                    event_frame,
-                    text=f"⏰ {start_time} - {end_time}",
+                    details_frame,
+                    text=f"⏰ {start_time}-{end_time}",
                     font=("Helvetica", 7),
-                ).pack(anchor="w")
+                ).pack(side="left", padx=(0, 5))
 
                 if "Salle" in elements and elements["Salle"]:
                     ttk.Label(
-                        event_frame,
+                        details_frame,
                         text=f"🏢 {elements['Salle']}",
                         font=("Helvetica", 7),
-                    ).pack(anchor="w")
+                    ).pack(side="left", padx=(0, 5))
 
                 if "Personnel" in elements and elements["Personnel"]:
                     ttk.Label(
-                        event_frame,
+                        details_frame,
                         text=f"👤 {elements['Personnel']}",
                         font=("Helvetica", 7),
                         wraplength=140,
-                    ).pack(anchor="w")
+                    ).pack(side="left")
 
         except Exception as e:
             continue  # Ignorer silencieusement les erreurs
