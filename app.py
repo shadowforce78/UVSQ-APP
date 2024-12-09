@@ -11,9 +11,20 @@ def get_monday_date():
     today = datetime.now()
     return today - timedelta(days=today.weekday())
 
+def get_week_dates(reference_date):
+    """Retourne le lundi et vendredi de la semaine pour une date donnée"""
+    monday = reference_date - timedelta(days=reference_date.weekday())
+    friday = monday + timedelta(days=4)
+    return monday.strftime("%Y-%m-%d"), friday.strftime("%Y-%m-%d")
+
+def format_week_display(start_date):
+    """Formate l'affichage de la semaine"""
+    start = datetime.strptime(start_date, "%Y-%m-%d")
+    end = start + timedelta(days=4)
+    return f"Semaine du {start.strftime('%d/%m/%Y')} au {end.strftime('%d/%m/%Y')}"
+
 classe = 'INF1-B'
-start = get_monday_date().strftime("%Y-%m-%d")
-end = (get_monday_date() + timedelta(days=4)).strftime("%Y-%m-%d")
+start, end = get_week_dates(datetime.now())
 
 def get_edt(classe, start, end):
     response = requests.get(
@@ -102,7 +113,12 @@ def get_day_position(date_str):
     except:
         return None
 
-def show_schedule(data):
+def show_schedule(data, current_date=None):
+    global start, end  # Accéder aux variables globales
+    
+    if current_date is None:
+        current_date = datetime.now()
+    
     # Get screen dimensions
     screen_width = window.winfo_screenwidth()
     screen_height = window.winfo_screenheight()
@@ -132,6 +148,37 @@ def show_schedule(data):
         style="secondary.TButton"
     )
     back_button.pack(side="left")
+
+    # Create navigation frame
+    nav_frame = ttk.Frame(header_frame)
+    nav_frame.pack(side="right", padx=20)
+
+    # Add navigation buttons with updated start and end dates
+    prev_week = ttk.Button(
+        nav_frame,
+        text="◀",
+        command=lambda: change_week(-1, current_date),
+        style="secondary.TButton",
+        width=3
+    )
+    prev_week.pack(side="left", padx=5)
+
+    # Week label with current start date
+    week_label = ttk.Label(
+        nav_frame,
+        text=format_week_display(start),  # Utilise la variable globale start
+        font=("Helvetica", 10)
+    )
+    week_label.pack(side="left", padx=10)
+
+    next_week = ttk.Button(
+        nav_frame,
+        text="▶",
+        command=lambda: change_week(1, current_date),
+        style="secondary.TButton",
+        width=3
+    )
+    next_week.pack(side="left", padx=5)
 
     # Adjust row numbers for the rest of the grid (+1 for all row indices)
     days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"]
@@ -289,6 +336,12 @@ def show_schedule(data):
     # Configure scroll region
     schedule_frame.update_idletasks()
 
+def change_week(offset, current_date):
+    """Change la semaine affichée"""
+    global start, end  # Déclarer l'utilisation des variables globales
+    new_date = datetime.strptime(start, "%Y-%m-%d") + timedelta(weeks=offset)
+    start, end = get_week_dates(new_date)  # Mettre à jour les variables globales
+    get_edt(classe, start, end)
 
 window = ttk.Window(themename="superhero")
 window.title("UVSQ - Application")
