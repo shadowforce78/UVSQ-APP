@@ -234,28 +234,28 @@ def show_schedule(data):
                 ttk.Label(
                     event_frame,
                     text=matiere,
-                    font=("Helvetica", 10, "bold"),
+                    font=("Helvetica", 8, "bold"),
                     wraplength=140
                 ).pack(fill="x", padx=2, pady=1)
 
                 ttk.Label(
                     event_frame,
                     text=f"⏰ {start_time} - {end_time}",
-                    font=("Helvetica", 9),
+                    font=("Helvetica", 7),
                 ).pack(anchor="w")
 
                 if "Salle" in elements and elements["Salle"]:
                     ttk.Label(
                         event_frame,
                         text=f"🏢 {elements['Salle']}",
-                        font=("Helvetica", 9),
+                        font=("Helvetica", 7),
                     ).pack(anchor="w")
 
                 if "Personnel" in elements and elements["Personnel"]:
                     ttk.Label(
                         event_frame,
                         text=f"👤 {elements['Personnel']}",
-                        font=("Helvetica", 9),
+                        font=("Helvetica", 7),
                         wraplength=140,
                     ).pack(anchor="w")
 
