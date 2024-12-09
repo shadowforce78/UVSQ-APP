@@ -2,13 +2,18 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import tkinter as tk
 import requests
+from datetime import datetime, timedelta
 
 API = "http://localhost:8000"
 EDTEndpoint = "/uvsq/edt/{classe}+{start}+{end}"
 
+def get_monday_date():
+    today = datetime.now()
+    return today - timedelta(days=today.weekday())
+
 classe = 'INF1-B'
-start = '2024-12-09'
-end = '2024-12-13'
+start = get_monday_date().strftime("%Y-%m-%d")
+end = (get_monday_date() + timedelta(days=4)).strftime("%Y-%m-%d")
 
 def get_edt(classe, start, end):
     response = requests.get(
@@ -115,7 +120,20 @@ def show_schedule(data):
     schedule_frame = ttk.Frame(window)
     schedule_frame.grid(sticky="nsew", padx=10, pady=10)
 
-    # Define schedule structure first
+    # Create header frame for back button
+    header_frame = ttk.Frame(schedule_frame)
+    header_frame.grid(row=0, column=0, columnspan=6, sticky="w", pady=(0, 10))
+    
+    # Add back button
+    back_button = ttk.Button(
+        header_frame,
+        text="← Retour au menu",
+        command=lambda: show_menu(classe, start, end),
+        style="secondary.TButton"
+    )
+    back_button.pack(side="left")
+
+    # Adjust row numbers for the rest of the grid (+1 for all row indices)
     days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"]
     hours = generate_time_slots()  # Déplacé ici avant son utilisation
 
@@ -130,17 +148,17 @@ def show_schedule(data):
     for i, hour in enumerate(hours):
         if show_time_label(hour):
             ttk.Label(schedule_frame, text=hour, **header_style).grid(
-                row=i + 2, column=0, padx=2, pady=2, sticky="e"
+                row=i + 3, column=0, padx=2, pady=2, sticky="e"
             )
         else:
             ttk.Label(schedule_frame, text="", **header_style).grid(
-                row=i + 2, column=0, padx=2, pady=2, sticky="e"
+                row=i + 3, column=0, padx=2, pady=2, sticky="e"
             )
 
     # Create day headers
     for i, day in enumerate(days):
         ttk.Label(schedule_frame, text=day, **header_style).grid(
-            row=1, column=i + 1, padx=2, pady=2, sticky="nsew"
+            row=2, column=i + 1, padx=2, pady=2, sticky="nsew"
         )
 
     # Créer d'abord la grille vide
@@ -153,7 +171,7 @@ def show_schedule(data):
                 width=cell_width
             )
             cell_frame.grid(
-                row=row + 2,
+                row=row + 3,
                 column=col + 1,
                 padx=1,
                 pady=1,
@@ -163,7 +181,7 @@ def show_schedule(data):
             
     # Configure grid avec les nouvelles dimensions
     for row in range(len(hours)):
-        schedule_frame.grid_rowconfigure(row + 2, weight=1, minsize=cell_height)
+        schedule_frame.grid_rowconfigure(row + 3, weight=1, minsize=cell_height)
     for col in range(len(days)):
         schedule_frame.grid_columnconfigure(col + 1, weight=1, minsize=cell_width)
 
@@ -204,8 +222,8 @@ def show_schedule(data):
             if closest_end not in hours:
                 closest_end = f"{(end_hour-1):02d}:00"
 
-            start_row = hours.index(start_time) + 2
-            end_row = hours.index(closest_end) + 2
+            start_row = hours.index(start_time) + 3
+            end_row = hours.index(closest_end) + 3
             row_span = end_row - start_row
             if row_span < 1:
                 row_span = 1
