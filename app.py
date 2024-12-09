@@ -1,4 +1,6 @@
 import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
+import tkinter as tk
 import requests
 
 API = "http://localhost:8000"
@@ -59,42 +61,35 @@ def get_day_from_date(date_str):
     try:
         return date_str.strip().split()[0].split('/')[0]
     except:
-        print(f"Erreur lors du parsing de la date: {date_str}")
         return None
 
-def get_nearest_hour(time_str):
-    """Trouve l'heure la plus proche dans la grille"""
-    hours = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", 
-             "14:00", "15:00", "16:00", "17:00", "18:00"]
-    
-    try:
-        hour, minute = map(int, time_str.split(":"))
-        if minute >= 30:
-            hour += 1
-        target = f"{hour:02d}:00"
-        
-        if target in hours:
-            return target
-        elif hour < 8:
-            return "08:00"
-        elif hour > 18:
-            return "18:00"
-        else:
-            # Trouver l'heure la plus proche
-            for h in hours:
-                if h > target:
-                    return h
-            return hours[-1]
-    except:
-        return "08:00"  # Valeur par défaut en cas d'erreur
+def generate_time_slots():
+    """Génère les créneaux horaires de 15 minutes"""
+    slots = []
+    for hour in range(8, 19):  # De 8h à 18h
+        for minute in [0, 15, 30, 45]:
+            slots.append(f"{hour:02d}:{minute:02d}")
+    return slots
 
+def show_time_label(time_str):
+    """Détermine si l'heure doit être affichée dans la colonne"""
+    return time_str.endswith(":00")
+
+def get_nearest_time_slot(time_str):
+    """Trouve le créneau de 15 minutes le plus proche"""
+    hour, minute = map(int, time_str.split(":"))
+    # Arrondir aux 15 minutes les plus proches
+    minute = round(minute / 15) * 15
+    if minute == 60:
+        hour += 1
+        minute = 0
+    return f"{hour:02d}:{minute:02d}"
 
 def show_schedule(data):
-    # Déboguer les données reçues
-    print("Données reçues:", data)
-
-    # Resize window for schedule view
-    window.geometry("1200x800")
+    # Get screen dimensions
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    window.geometry(f"{screen_width}x{screen_height}")
 
     # Destroy the menu frame
     for widget in window.winfo_children():
@@ -104,53 +99,32 @@ def show_schedule(data):
     window.grid_rowconfigure(0, weight=1)
     window.grid_columnconfigure(0, weight=1)
 
-    # Create a canvas and a scrollbar
-    canvas = ttk.Canvas(window)
-    scrollbar = ttk.Scrollbar(window, orient="vertical", command=canvas.yview)
-    scrollable_frame = ttk.Frame(canvas)
-
-    scrollable_frame.bind(
-        "<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-    )
-
-    canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-    canvas.configure(yscrollcommand=scrollbar.set)
-
-    canvas.grid(row=0, column=0, sticky="nsew")
-    scrollbar.grid(row=0, column=1, sticky="ns")
-
     # Create main frame for schedule
-    schedule_frame = ttk.Frame(scrollable_frame)
+    schedule_frame = ttk.Frame(window)
     schedule_frame.grid(sticky="nsew", padx=10, pady=10)
 
-    # Add back button
-    back_button = ttk.Button(schedule_frame, text="Retour", command=show_menu)
-    back_button.grid(row=0, column=0, columnspan=6, pady=(0, 20), sticky="w")
-
-    # Create a table-like structure for the schedule
+    # Define schedule structure first
     days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"]
-    hours = [
-        "08:00",
-        "09:00",
-        "10:00",
-        "11:00",
-        "12:00",
-        "13:00",
-        "14:00",
-        "15:00",
-        "16:00",
-        "17:00",
-        "18:00",
-    ]
+    hours = generate_time_slots()  # Déplacé ici avant son utilisation
 
-    # Style for headers
-    header_style = {"font": ("Helvetica", 11, "bold"), "padding": 10}
+    # Calculate cell dimensions based on screen size
+    cell_width = (screen_width - 100) // 6  # 5 days + 1 time column
+    cell_height = (screen_height - 150) // (len(hours) + 1)  # +1 pour l'en-tête
 
-    # Create time column
+    # Style for headers with smaller font for time slots
+    header_style = {"font": ("Helvetica", 9, "bold"), "padding": 5}
+
+    # Create time column - Modifié pour n'afficher que les heures complètes
     for i, hour in enumerate(hours):
-        ttk.Label(schedule_frame, text=hour, **header_style).grid(
-            row=i + 2, column=0, padx=2, pady=2, sticky="e"
-        )
+        if show_time_label(hour):
+            ttk.Label(schedule_frame, text=hour, **header_style).grid(
+                row=i + 2, column=0, padx=2, pady=2, sticky="e"
+            )
+        else:
+            # Créer un label vide pour maintenir l'espacement
+            ttk.Label(schedule_frame, text="", **header_style).grid(
+                row=i + 2, column=0, padx=2, pady=2, sticky="e"
+            )
 
     # Create day headers
     for i, day in enumerate(days):
@@ -164,8 +138,8 @@ def show_schedule(data):
             cell_frame = ttk.Frame(
                 schedule_frame,
                 style="secondary.TFrame",
-                height=80,
-                width=150
+                height=cell_height,
+                width=cell_width
             )
             cell_frame.grid(
                 row=row + 2,
@@ -174,14 +148,13 @@ def show_schedule(data):
                 pady=1,
                 sticky="nsew"
             )
-            # Forcer les dimensions minimales
             cell_frame.grid_propagate(False)
             
-    # Configure grid
+    # Configure grid avec les nouvelles dimensions
     for row in range(len(hours)):
-        schedule_frame.grid_rowconfigure(row + 2, weight=1, minsize=80)
+        schedule_frame.grid_rowconfigure(row + 2, weight=1, minsize=cell_height)
     for col in range(len(days)):
-        schedule_frame.grid_columnconfigure(col + 1, weight=1, minsize=150)
+        schedule_frame.grid_columnconfigure(col + 1, weight=1, minsize=cell_width)
 
     # Populate events with raised priority
     colors = ["primary", "info", "success", "warning"]
@@ -200,11 +173,9 @@ def show_schedule(data):
             end_raw = heure_fin.strip().split()[1] if " " in heure_fin else heure_fin.strip()
             
             # Trouver les heures les plus proches dans la grille
-            start_time = get_nearest_hour(start_raw)
-            end_time = get_nearest_hour(end_raw)
+            start_time = get_nearest_time_slot(start_raw)
+            end_time = get_nearest_time_slot(end_raw)
             day_num = get_day_from_date(date_debut)
-
-            print(f"Debug - Start: {start_time}, End: {end_time}, Day: {day_num}")
 
             if not day_num:
                 continue
@@ -220,7 +191,6 @@ def show_schedule(data):
             day = days_map.get(day_num)
             
             if not day or start_time not in hours:
-                print(f"Jour non valide ou heure de début non trouvée: {day}, {start_time}")
                 continue
 
             # Trouver l'index de fin le plus proche
@@ -240,7 +210,7 @@ def show_schedule(data):
             event_frame = ttk.Frame(
                 schedule_frame,
                 style=f"{colors[hash(elements.get('Matière', '')) % len(colors)]}.TFrame",
-                height=80 * row_span,  # Hauteur fixe basée sur row_span
+                height=cell_height * row_span,
                 padding=5
             )
             event_frame.grid(
@@ -286,8 +256,7 @@ def show_schedule(data):
                     ).pack(anchor="w")
 
         except Exception as e:
-            print(f"Erreur détaillée: {str(e)}")
-            print(f"Événement problématique: {elements if 'elements' in locals() else 'N/A'}")
+            continue  # Ignorer silencieusement les erreurs
 
     # Configure scroll region
     schedule_frame.update_idletasks()
@@ -295,7 +264,7 @@ def show_schedule(data):
 
 window = ttk.Window(themename="superhero")
 window.title("UVSQ - Application")
-window.geometry("400x600")
+window.state('zoomed')  # Démarre en plein écran
 
 # Configure window grid
 window.grid_rowconfigure(0, weight=1)
