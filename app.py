@@ -14,32 +14,40 @@ def get_edt(classe, start, end):
 
 
 def show_menu():
-    # Destroy the login frame
-    login_frame.destroy()
+    # Destroy all widgets
+    for widget in window.winfo_children():
+        widget.destroy()
+
+    # Configure window grid
+    window.grid_rowconfigure(0, weight=1)
+    window.grid_columnconfigure(0, weight=1)
 
     # Create a new frame for the menu
     menu_frame = ttk.Frame(window)
-    menu_frame.pack(pady=100)
+    menu_frame.grid(row=0, column=0)
 
     # Menu options
     schedule_button = ttk.Button(
         menu_frame,
         text="Emploi du temps",
-        command=lambda: get_edt("inf1-b", "2024-12-09", "2024-12-09"),
+        command=lambda: get_edt("inf1-b", "2024-12-09", "2024-12-13"),
     )
-    schedule_button.pack(pady=5)
+    schedule_button.grid(row=0, pady=5)
 
     grades_button = ttk.Button(menu_frame, text="Bulletins")
-    grades_button.pack(pady=5)
+    grades_button.grid(row=1, pady=5)
 
     absences_button = ttk.Button(menu_frame, text="Absences")
-    absences_button.pack(pady=5)
+    absences_button.grid(row=2, pady=5)
 
     settings_button = ttk.Button(menu_frame, text="Paramètres")
-    settings_button.pack(pady=5)
+    settings_button.grid(row=3, pady=5)
 
 
 def show_schedule(data):
+    # Resize window for schedule view
+    window.geometry("1200x800")
+    
     # Destroy the menu frame
     for widget in window.winfo_children():
         widget.destroy()
@@ -89,40 +97,63 @@ def show_schedule(data):
     for event in data:
         elements = {elem["label"]: elem["content"] for elem in event["elements"]}
         day = elements.get("Jour", "Jour non spécifié")
-        start_time = elements.get("Heure", "").split(" - ")[0]  # Get start time
+        time_range = elements.get("Heure", "").split(" - ")
         
-        if day in days and start_time in hours:
-            row = hours.index(start_time) + 2
-            col = days.index(day) + 1
-            
-            # Create event frame with random color
-            event_frame = ttk.Frame(
-                schedule_frame,
-                style=f"{colors[hash(elements.get('Matière', '')) % len(colors)]}.TFrame",
-                padding=5
-            )
-            event_frame.grid(row=row, column=col, sticky="nsew", padx=1, pady=1)
-            
-            # Add event details with better formatting
-            ttk.Label(
-                event_frame,
-                text=elements.get('Matière', ''),
-                font=("Helvetica", 10, "bold")
-            ).pack(anchor="w")
-            
-            if "Salle" in elements and elements["Salle"]:
+        if len(time_range) == 2 and day in days:
+            start_time, end_time = time_range
+            if start_time in hours:
+                start_row = hours.index(start_time) + 2
+                # Calculer le nombre de créneaux horaires
+                end_row = start_row
+                if end_time in hours:
+                    end_row = hours.index(end_time) + 2
+                row_span = end_row - start_row
+                col = days.index(day) + 1
+                
+                # Créer le cadre de l'événement
+                event_frame = ttk.Frame(
+                    schedule_frame,
+                    style=f"{colors[hash(elements.get('Matière', '')) % len(colors)]}.TFrame",
+                    padding=5
+                )
+                event_frame.grid(
+                    row=start_row, 
+                    column=col, 
+                    sticky="nsew", 
+                    padx=1, 
+                    pady=1,
+                    rowspan=row_span
+                )
+                
+                # Ajouter les détails de l'événement
                 ttk.Label(
                     event_frame,
-                    text=f"🏢 {elements['Salle']}",
-                    font=("Helvetica", 9)
+                    text=elements.get('Matière', ''),
+                    font=("Helvetica", 10, "bold"),
+                    wraplength=140
                 ).pack(anchor="w")
-            
-            if "Personnel" in elements and elements["Personnel"]:
-                ttk.Label(
-                    event_frame,
-                    text=f"👤 {elements['Personnel']}",
-                    font=("Helvetica", 9)
-                ).pack(anchor="w")
+                
+                if time_range:
+                    ttk.Label(
+                        event_frame,
+                        text=f"⏰ {' - '.join(time_range)}",
+                        font=("Helvetica", 9)
+                    ).pack(anchor="w")
+                
+                if "Salle" in elements and elements["Salle"]:
+                    ttk.Label(
+                        event_frame,
+                        text=f"🏢 {elements['Salle']}",
+                        font=("Helvetica", 9)
+                    ).pack(anchor="w")
+                
+                if "Personnel" in elements and elements["Personnel"]:
+                    ttk.Label(
+                        event_frame,
+                        text=f"👤 {elements['Personnel']}",
+                        font=("Helvetica", 9),
+                        wraplength=140
+                    ).pack(anchor="w")
 
     # Configure scroll region
     schedule_frame.update_idletasks()
@@ -130,26 +161,30 @@ def show_schedule(data):
 
 window = ttk.Window(themename="superhero")
 window.title("UVSQ - Application")
-window.geometry("600x800")
+window.geometry("400x600")
+
+# Configure window grid
+window.grid_rowconfigure(0, weight=1)
+window.grid_columnconfigure(0, weight=1)
 
 # Create a frame for the login form
 login_frame = ttk.Frame(window)
-login_frame.pack(pady=100)
+login_frame.grid(row=0, column=0)
 
 # Student number label and entry
 student_number_label = ttk.Label(login_frame, text="Numéro étudiant")
-student_number_label.pack(pady=5)
+student_number_label.grid(row=0, pady=5)
 student_number_entry = ttk.Entry(login_frame)
-student_number_entry.pack(pady=5)
+student_number_entry.grid(row=1, pady=5)
 
 # Password label and entry
 password_label = ttk.Label(login_frame, text="Mot de passe")
-password_label.pack(pady=5)
+password_label.grid(row=2, pady=5)
 password_entry = ttk.Entry(login_frame, show="*")
-password_entry.pack(pady=5)
+password_entry.grid(row=3, pady=5)
 
 # Login button
 login_button = ttk.Button(login_frame, text="Se connecter", command=show_menu)
-login_button.pack(pady=20)
+login_button.grid(row=4, pady=20)
 
 window.mainloop()
