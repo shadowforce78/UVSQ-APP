@@ -6,6 +6,9 @@ import requests
 API = "http://localhost:8000"
 EDTEndpoint = "/uvsq/edt/{classe}+{start}+{end}"
 
+classe = 'INF1-B'
+start = '2024-12-09'
+end = '2024-12-13'
 
 def get_edt(classe, start, end):
     response = requests.get(
@@ -15,7 +18,7 @@ def get_edt(classe, start, end):
     show_schedule(data)
 
 
-def show_menu():
+def show_menu(classe, start, end):
     # Destroy all widgets
     for widget in window.winfo_children():
         widget.destroy()
@@ -32,7 +35,7 @@ def show_menu():
     schedule_button = ttk.Button(
         menu_frame,
         text="Emploi du temps",
-        command=lambda: get_edt("inf1-b", "2024-12-09", "2024-12-13"),
+        command=lambda: get_edt(classe, start, end)
     )
     schedule_button.grid(row=0, pady=5)
 
@@ -85,6 +88,15 @@ def get_nearest_time_slot(time_str):
         minute = 0
     return f"{hour:02d}:{minute:02d}"
 
+def get_day_position(date_str):
+    """Détermine la position du jour dans la semaine (0=Lundi, 4=Vendredi)"""
+    try:
+        day = int(date_str.strip().split()[0].split('/')[0])
+        start_day = int(start.split('-')[2])  # Récupère le jour du début de semaine
+        return day - start_day
+    except:
+        return None
+
 def show_schedule(data):
     # Get screen dimensions
     screen_width = window.winfo_screenwidth()
@@ -121,7 +133,6 @@ def show_schedule(data):
                 row=i + 2, column=0, padx=2, pady=2, sticky="e"
             )
         else:
-            # Créer un label vide pour maintenir l'espacement
             ttk.Label(schedule_frame, text="", **header_style).grid(
                 row=i + 2, column=0, padx=2, pady=2, sticky="e"
             )
@@ -180,18 +191,12 @@ def show_schedule(data):
             if not day_num:
                 continue
 
-            # Convertir le jour en format attendu
-            days_map = {
-                "09": "Lundi",
-                "10": "Mardi",
-                "11": "Mercredi",
-                "12": "Jeudi",
-                "13": "Vendredi"
-            }
-            day = days_map.get(day_num)
-            
-            if not day or start_time not in hours:
+            # Nouvelle façon de déterminer le jour
+            day_position = get_day_position(date_debut)
+            if day_position is None or day_position < 0 or day_position >= 5:
                 continue
+                
+            col = day_position + 1  # +1 car la première colonne est pour les heures
 
             # Trouver l'index de fin le plus proche
             end_hour = int(end_time.split(":")[0])
@@ -204,7 +209,6 @@ def show_schedule(data):
             row_span = end_row - start_row
             if row_span < 1:
                 row_span = 1
-            col = days.index(day) + 1
 
             # Créer le frame d'événement
             event_frame = ttk.Frame(
@@ -286,8 +290,12 @@ password_label.grid(row=2, pady=5)
 password_entry = ttk.Entry(login_frame, show="*")
 password_entry.grid(row=3, pady=5)
 
-# Login button
-login_button = ttk.Button(login_frame, text="Se connecter", command=show_menu)
+# Au lieu d'appeler directement show_menu, on crée une fonction lambda
+login_button = ttk.Button(
+    login_frame, 
+    text="Se connecter", 
+    command=lambda: show_menu(classe, start, end)
+)
 login_button.grid(row=4, pady=20)
 
 window.mainloop()
