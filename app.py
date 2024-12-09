@@ -62,12 +62,13 @@ def show_schedule(data):
         event_frame = ttk.Frame(scrollable_frame, style="Card.TFrame")
         event_frame.pack(pady=5, padx=10, fill="x")
 
-        # Get event details
+        # Get event details with default values for missing keys
         elements = {elem["label"]: elem["content"] for elem in event["elements"]}
-
-        # Add event details
-        ttk.Label(event_frame, text=elements["Heure"], font=("Helvetica", 10, "bold")).pack(anchor="w", padx=5)
-        ttk.Label(event_frame, text=elements["Matière"]).pack(anchor="w", padx=5)
+        
+        # Add event details with safe access
+        ttk.Label(event_frame, text=elements.get("Heure", "Horaire non spécifié"), 
+                 font=("Helvetica", 10, "bold")).pack(anchor="w", padx=5)
+        ttk.Label(event_frame, text=elements.get("Matière", "Matière non spécifiée")).pack(anchor="w", padx=5)
         
         if "Personnel" in elements and elements["Personnel"]:
             ttk.Label(event_frame, text=f"Prof: {elements['Personnel']}").pack(anchor="w", padx=5)
@@ -75,8 +76,12 @@ def show_schedule(data):
         if "Salle" in elements and elements["Salle"]:
             ttk.Label(event_frame, text=f"Salle: {elements['Salle']}").pack(anchor="w", padx=5)
         
-        ttk.Label(event_frame, text=f"Groupe: {elements['Groupe']}").pack(anchor="w", padx=5)
-        ttk.Label(event_frame, text=elements["Catégorie d'événement"]).pack(anchor="w", padx=5)
+        group = elements.get("Groupe", "Groupe non spécifié")
+        ttk.Label(event_frame, text=f"Groupe: {group}").pack(anchor="w", padx=5)
+        
+        event_type = elements.get("Catégorie d'événement", "Type non spécifié")
+        if event_type:
+            ttk.Label(event_frame, text=event_type).pack(anchor="w", padx=5)
         
         ttk.Separator(scrollable_frame).pack(fill="x", pady=5)
 
