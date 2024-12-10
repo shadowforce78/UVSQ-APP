@@ -1,20 +1,20 @@
 import ttkbootstrap as ttk
-from .schedule_view import show_schedule
+from .view_controller import ViewController
 
-def show_menu(window, classe, start, end):
+def create_menu_view(window, classe, start, end):
+    # Clear window
     for widget in window.winfo_children():
         widget.destroy()
 
-    window.grid_rowconfigure(0, weight=1)
-    window.grid_columnconfigure(0, weight=1)
-
+    # Create menu frame
     menu_frame = ttk.Frame(window)
     menu_frame.grid(row=0, column=0)
 
+    # Menu buttons
     schedule_button = ttk.Button(
         menu_frame, 
         text="Emploi du temps", 
-        command=lambda: show_schedule(window, classe, start, end)
+        command=lambda: ViewController.show_schedule(window, classe, start, end)
     )
     schedule_button.grid(row=0, pady=5)
 
