@@ -198,11 +198,13 @@ def show_schedule(data, current_date=None):
     # Add class selector
     class_frame = ttk.Frame(header_frame)
     class_frame.pack(side="left", padx=20)
-    
+
     class_label = ttk.Label(class_frame, text="Classe:")
     class_label.pack(side="left", padx=5)
-    
-    class_combo = ttk.Combobox(class_frame, values=classesChoices, state="readonly", width=15)
+
+    class_combo = ttk.Combobox(
+        class_frame, values=classesChoices, state="readonly", width=15
+    )
     class_combo.set(classe)
     class_combo.pack(side="left", padx=5)
     class_combo.bind("<<ComboboxSelected>>", on_class_change)
@@ -397,8 +399,8 @@ def change_week(offset, current_date):
     new_date = datetime.strptime(start, "%Y-%m-%d") + timedelta(weeks=offset)
     start, end = get_week_dates(new_date)  # Mettre à jour les variables globales
     get_edt(classe, start, end)
-    
-    
+
+
 def login(id, password):
     response = requests.get(API + BULLETINSEndpoint.format(id=id, password=password))
     data = response.json()
@@ -429,16 +431,22 @@ password_label.grid(row=2, pady=5)
 password_entry = ttk.Entry(login_frame, show="*")
 password_entry.grid(row=3, pady=5)
 
+
 def check_login(id, password):
     data = login(id, password)
     if "detail" not in data:
         show_menu(classe, start, end)
     else:
-        messagebox.showerror("Erreur", "Identifiants invalides !")  # Utilisation de messagebox directement
+        messagebox.showerror(
+            "Erreur", "Identifiants invalides !"
+        )  # Utilisation de messagebox directement
+
 
 # Au lieu d'appeler directement show_menu, on crée une fonction lambda
 login_button = ttk.Button(
-    login_frame, text="Se connecter", command=lambda: check_login(student_number_entry.get(), password_entry.get())
+    login_frame,
+    text="Se connecter",
+    command=lambda: check_login(student_number_entry.get(), password_entry.get()),
 )
 login_button.grid(row=4, pady=20)
 
