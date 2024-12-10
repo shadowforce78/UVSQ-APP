@@ -4,6 +4,9 @@ import tkinter as tk
 from tkinter import messagebox  # Ajout de l'import messagebox
 import requests
 from datetime import datetime, timedelta
+from utils.date_utils import get_week_dates
+from views.login_view import create_login_view
+from views.menu_view import show_menu
 
 API = "http://localhost:8000"
 EDTEndpoint = "/uvsq/edt/{classe}+{start}+{end}"
@@ -15,22 +18,12 @@ def get_monday_date():
     return today - timedelta(days=today.weekday())
 
 
-def get_week_dates(reference_date):
-    """Retourne le lundi et vendredi de la semaine pour une date donnée"""
-    monday = reference_date - timedelta(days=reference_date.weekday())
-    friday = monday + timedelta(days=4)
-    return monday.strftime("%Y-%m-%d"), friday.strftime("%Y-%m-%d")
-
-
 def format_week_display(start_date):
     """Formate l'affichage de la semaine"""
     start = datetime.strptime(start_date, "%Y-%m-%d")
     end = start + timedelta(days=4)
     return f"Semaine du {start.strftime('%d/%m/%Y')} au {end.strftime('%d/%m/%Y')}"
 
-
-classe = "INF1-B"
-start, end = get_week_dates(datetime.now())
 
 classesChoices = [
     "INF1-A1",
@@ -407,31 +400,6 @@ def login(id, password):
     return data
 
 
-window = ttk.Window(themename="superhero")
-window.title("UVSQ - Application")
-window.state("zoomed")  # Démarre en plein écran
-
-# Configure window grid
-window.grid_rowconfigure(0, weight=1)
-window.grid_columnconfigure(0, weight=1)
-
-# Create a frame for the login form
-login_frame = ttk.Frame(window)
-login_frame.grid(row=0, column=0)
-
-# Student number label and entry
-student_number_label = ttk.Label(login_frame, text="Numéro étudiant")
-student_number_label.grid(row=0, pady=5)
-student_number_entry = ttk.Entry(login_frame)
-student_number_entry.grid(row=1, pady=5)
-
-# Password label and entry
-password_label = ttk.Label(login_frame, text="Mot de passe")
-password_label.grid(row=2, pady=5)
-password_entry = ttk.Entry(login_frame, show="*")
-password_entry.grid(row=3, pady=5)
-
-
 def check_login(id, password):
     data = login(id, password)
     if "detail" not in data:
@@ -442,12 +410,20 @@ def check_login(id, password):
         )  # Utilisation de messagebox directement
 
 
-# Au lieu d'appeler directement show_menu, on crée une fonction lambda
-login_button = ttk.Button(
-    login_frame,
-    text="Se connecter",
-    command=lambda: check_login(student_number_entry.get(), password_entry.get()),
-)
-login_button.grid(row=4, pady=20)
+def main():
+    window = ttk.Window(themename="superhero")
+    window.title("UVSQ - Application")
+    window.state("zoomed")
 
-window.mainloop()
+    window.grid_rowconfigure(0, weight=1)
+    window.grid_columnconfigure(0, weight=1)
+
+    classe = "INF1-B"
+    start, end = get_week_dates(datetime.now())
+
+    create_login_view(window, classe, start, end)
+    window.mainloop()
+
+
+if __name__ == "__main__":
+    main()
