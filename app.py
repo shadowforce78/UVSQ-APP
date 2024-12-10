@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 
 API = "http://localhost:8000"
 EDTEndpoint = "/uvsq/edt/{classe}+{start}+{end}"
+BULLETINSEndpoint = "/uvsq/bulletin/{id}+{password}"
 
 
 def get_monday_date():
@@ -395,6 +396,12 @@ def change_week(offset, current_date):
     new_date = datetime.strptime(start, "%Y-%m-%d") + timedelta(weeks=offset)
     start, end = get_week_dates(new_date)  # Mettre à jour les variables globales
     get_edt(classe, start, end)
+    
+    
+def login(id, password):
+    response = requests.get(API + BULLETINSEndpoint.format(id=id, password=password))
+    data = response.json()
+    return data
 
 
 window = ttk.Window(themename="superhero")
@@ -421,9 +428,16 @@ password_label.grid(row=2, pady=5)
 password_entry = ttk.Entry(login_frame, show="*")
 password_entry.grid(row=3, pady=5)
 
+def check_login(id, password):
+    data = login(id, password)
+    if data["detail"] != "Not Found":
+        show_menu(classe, start, end)
+    else:
+        ttk.messagebox.showerror("Erreur", "Identifiants invalid !")
+
 # Au lieu d'appeler directement show_menu, on crée une fonction lambda
 login_button = ttk.Button(
-    login_frame, text="Se connecter", command=lambda: show_menu(classe, start, end)
+    login_frame, text="Se connecter", command=lambda: check_login(student_number_entry.get(), password_entry.get())
 )
 login_button.grid(row=4, pady=20)
 
