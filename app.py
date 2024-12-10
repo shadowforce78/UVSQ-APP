@@ -1,6 +1,7 @@
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import tkinter as tk
+from tkinter import messagebox  # Ajout de l'import messagebox
 import requests
 from datetime import datetime, timedelta
 
@@ -430,10 +431,10 @@ password_entry.grid(row=3, pady=5)
 
 def check_login(id, password):
     data = login(id, password)
-    if data["detail"] != "Not Found":
+    if "detail" not in data:
         show_menu(classe, start, end)
     else:
-        ttk.messagebox.showerror("Erreur", "Identifiants invalid !")
+        messagebox.showerror("Erreur", "Identifiants invalides !")  # Utilisation de messagebox directement
 
 # Au lieu d'appeler directement show_menu, on crée une fonction lambda
 login_button = ttk.Button(
