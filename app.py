@@ -7,9 +7,11 @@ from datetime import datetime, timedelta
 API = "http://localhost:8000"
 EDTEndpoint = "/uvsq/edt/{classe}+{start}+{end}"
 
+
 def get_monday_date():
     today = datetime.now()
     return today - timedelta(days=today.weekday())
+
 
 def get_week_dates(reference_date):
     """Retourne le lundi et vendredi de la semaine pour une date donnée"""
@@ -17,14 +19,44 @@ def get_week_dates(reference_date):
     friday = monday + timedelta(days=4)
     return monday.strftime("%Y-%m-%d"), friday.strftime("%Y-%m-%d")
 
+
 def format_week_display(start_date):
     """Formate l'affichage de la semaine"""
     start = datetime.strptime(start_date, "%Y-%m-%d")
     end = start + timedelta(days=4)
     return f"Semaine du {start.strftime('%d/%m/%Y')} au {end.strftime('%d/%m/%Y')}"
 
-classe = 'INF1-B'
+
+classe = "INF1-B"
 start, end = get_week_dates(datetime.now())
+
+classesChoices = [
+    "INF1-A1",
+    "INF1-A2",
+    "INF1-B1",
+    "INF1-B2",
+    "INF1-C1",
+    "INF1-C2",
+    "INF2-FA",
+    "INF2-FI-A",
+    "INF2-FI-B",
+    "MMI1-A1",
+    "MMI1-A2",
+    "MMI1-B1",
+    "MMI1-B2",
+    "MMI2-A1",
+    "MMI2-A2",
+    "MMI2-B1",
+    "MMI2-B2",
+    "RT1-FI-A1",
+    "RT1-FI-A2",
+    "RT1-FI-B1",
+    "RT1-FI-B2",
+    "GEII1-TDA1",
+    "GEII1-TDA2",
+    "GEII1-TDB1",
+]
+
 
 def get_edt(classe, start, end):
     response = requests.get(
@@ -32,6 +64,13 @@ def get_edt(classe, start, end):
     )
     data = response.json()
     show_schedule(data)
+
+
+def on_class_change(event):
+    """Handle class selection change"""
+    global classe
+    classe = event.widget.get()
+    get_edt(classe, start, end)
 
 
 def show_menu(classe, start, end):
@@ -47,22 +86,32 @@ def show_menu(classe, start, end):
     menu_frame = ttk.Frame(window)
     menu_frame.grid(row=0, column=0)
 
-    # Menu options
+    # Add class selector
+    class_frame = ttk.Frame(menu_frame)
+    class_frame.grid(row=0, pady=5)
+    
+    class_label = ttk.Label(class_frame, text="Sélectionner une classe:")
+    class_label.pack(side='left', padx=5)
+    
+    class_combo = ttk.Combobox(class_frame, values=classesChoices, state='readonly')
+    class_combo.set(classe)  # Set current selection
+    class_combo.pack(side='left', padx=5)
+    class_combo.bind('<<ComboboxSelected>>', on_class_change)
+
+    # Menu options (updated row positions)
     schedule_button = ttk.Button(
-        menu_frame,
-        text="Emploi du temps",
-        command=lambda: get_edt(classe, start, end)
+        menu_frame, text="Emploi du temps", command=lambda: get_edt(classe, start, end)
     )
-    schedule_button.grid(row=0, pady=5)
+    schedule_button.grid(row=1, pady=5)
 
     grades_button = ttk.Button(menu_frame, text="Bulletins")
-    grades_button.grid(row=1, pady=5)
+    grades_button.grid(row=2, pady=5)
 
     absences_button = ttk.Button(menu_frame, text="Absences")
-    absences_button.grid(row=2, pady=5)
+    absences_button.grid(row=3, pady=5)
 
     settings_button = ttk.Button(menu_frame, text="Paramètres")
-    settings_button.grid(row=3, pady=5)
+    settings_button.grid(row=4, pady=5)
 
 
 def normalize_time(time_str):
@@ -71,16 +120,19 @@ def normalize_time(time_str):
     hour = int(time_str.split(":")[0])
     return f"{hour:02d}:00"
 
+
 def format_time(time_str):
     """Convertit le format '12/12/2024 13:00' en '13:00'"""
     return normalize_time(time_str.strip().split()[1])
 
+
 def get_day_from_date(date_str):
     """Extrait le jour du mois d'une date '12/12/2024 13:00'"""
     try:
-        return date_str.strip().split()[0].split('/')[0]
+        return date_str.strip().split()[0].split("/")[0]
     except:
         return None
+
 
 def generate_time_slots():
     """Génère les créneaux horaires de 15 minutes"""
@@ -90,9 +142,11 @@ def generate_time_slots():
             slots.append(f"{hour:02d}:{minute:02d}")
     return slots
 
+
 def show_time_label(time_str):
     """Détermine si l'heure doit être affichée dans la colonne"""
     return time_str.endswith(":00")
+
 
 def get_nearest_time_slot(time_str):
     """Trouve le créneau de 15 minutes le plus proche"""
@@ -104,21 +158,23 @@ def get_nearest_time_slot(time_str):
         minute = 0
     return f"{hour:02d}:{minute:02d}"
 
+
 def get_day_position(date_str):
     """Détermine la position du jour dans la semaine (0=Lundi, 4=Vendredi)"""
     try:
-        day = int(date_str.strip().split()[0].split('/')[0])
-        start_day = int(start.split('-')[2])  # Récupère le jour du début de semaine
+        day = int(date_str.strip().split()[0].split("/")[0])
+        start_day = int(start.split("-")[2])  # Récupère le jour du début de semaine
         return day - start_day
     except:
         return None
 
+
 def show_schedule(data, current_date=None):
     global start, end  # Accéder aux variables globales
-    
+
     if current_date is None:
         current_date = datetime.now()
-    
+
     # Get screen dimensions
     screen_width = window.winfo_screenwidth()
     screen_height = window.winfo_screenheight()
@@ -139,13 +195,13 @@ def show_schedule(data, current_date=None):
     # Create header frame for back button
     header_frame = ttk.Frame(schedule_frame)
     header_frame.grid(row=0, column=0, columnspan=6, sticky="w", pady=(0, 10))
-    
+
     # Add back button
     back_button = ttk.Button(
         header_frame,
         text="← Retour au menu",
         command=lambda: show_menu(classe, start, end),
-        style="secondary.TButton"
+        style="secondary.TButton",
     )
     back_button.pack(side="left")
 
@@ -159,7 +215,7 @@ def show_schedule(data, current_date=None):
         text="◀",
         command=lambda: change_week(-1, current_date),
         style="secondary.TButton",
-        width=3
+        width=3,
     )
     prev_week.pack(side="left", padx=5)
 
@@ -167,7 +223,7 @@ def show_schedule(data, current_date=None):
     week_label = ttk.Label(
         nav_frame,
         text=format_week_display(start),  # Utilise la variable globale start
-        font=("Helvetica", 10)
+        font=("Helvetica", 10),
     )
     week_label.pack(side="left", padx=10)
 
@@ -176,7 +232,7 @@ def show_schedule(data, current_date=None):
         text="▶",
         command=lambda: change_week(1, current_date),
         style="secondary.TButton",
-        width=3
+        width=3,
     )
     next_week.pack(side="left", padx=5)
 
@@ -215,17 +271,11 @@ def show_schedule(data, current_date=None):
                 schedule_frame,
                 style="secondary.TFrame",
                 height=cell_height,
-                width=cell_width
+                width=cell_width,
             )
-            cell_frame.grid(
-                row=row + 3,
-                column=col + 1,
-                padx=1,
-                pady=1,
-                sticky="nsew"
-            )
+            cell_frame.grid(row=row + 3, column=col + 1, padx=1, pady=1, sticky="nsew")
             cell_frame.grid_propagate(False)
-            
+
     # Configure grid avec les nouvelles dimensions
     for row in range(len(hours)):
         schedule_frame.grid_rowconfigure(row + 3, weight=1, minsize=cell_height)
@@ -238,16 +288,18 @@ def show_schedule(data, current_date=None):
         try:
             elements = {elem["label"]: elem["content"] for elem in event["elements"]}
             heure = elements.get("Heure", "")
-            
+
             if not heure or "-" not in heure:
                 continue
-                
+
             date_debut, heure_fin = heure.split("-")
-            
+
             # Extraire uniquement l'heure de la date complète
             start_raw = date_debut.strip().split()[1]
-            end_raw = heure_fin.strip().split()[1] if " " in heure_fin else heure_fin.strip()
-            
+            end_raw = (
+                heure_fin.strip().split()[1] if " " in heure_fin else heure_fin.strip()
+            )
+
             # Trouver les heures les plus proches dans la grille
             start_time = get_nearest_time_slot(start_raw)
             end_time = get_nearest_time_slot(end_raw)
@@ -260,7 +312,7 @@ def show_schedule(data, current_date=None):
             day_position = get_day_position(date_debut)
             if day_position is None or day_position < 0 or day_position >= 5:
                 continue
-                
+
             col = day_position + 1  # +1 car la première colonne est pour les heures
 
             # Trouver l'index de fin le plus proche
@@ -280,7 +332,7 @@ def show_schedule(data, current_date=None):
                 schedule_frame,
                 style=f"{colors[hash(elements.get('Matière', '')) % len(colors)]}.TFrame",
                 height=cell_height * row_span,
-                padding=5
+                padding=5,
             )
             event_frame.grid(
                 row=start_row,
@@ -288,20 +340,20 @@ def show_schedule(data, current_date=None):
                 rowspan=row_span,
                 sticky="nsew",
                 padx=1,
-                pady=1
+                pady=1,
             )
             event_frame.grid_propagate(False)  # Forcer les dimensions
             event_frame.lift()
 
             # Afficher les détails de l'événement
-            matiere = elements.get('Matière', elements.get('Matières', ''))
+            matiere = elements.get("Matière", elements.get("Matières", ""))
             if matiere:
                 # Label pour la matière
                 ttk.Label(
                     event_frame,
                     text=matiere,
                     font=("Helvetica", 8, "bold"),
-                    wraplength=140
+                    wraplength=140,
                 ).pack(fill="x", padx=2, pady=1)
 
                 # Frame horizontal pour les détails
@@ -336,6 +388,7 @@ def show_schedule(data, current_date=None):
     # Configure scroll region
     schedule_frame.update_idletasks()
 
+
 def change_week(offset, current_date):
     """Change la semaine affichée"""
     global start, end  # Déclarer l'utilisation des variables globales
@@ -343,9 +396,10 @@ def change_week(offset, current_date):
     start, end = get_week_dates(new_date)  # Mettre à jour les variables globales
     get_edt(classe, start, end)
 
+
 window = ttk.Window(themename="superhero")
 window.title("UVSQ - Application")
-window.state('zoomed')  # Démarre en plein écran
+window.state("zoomed")  # Démarre en plein écran
 
 # Configure window grid
 window.grid_rowconfigure(0, weight=1)
@@ -369,9 +423,7 @@ password_entry.grid(row=3, pady=5)
 
 # Au lieu d'appeler directement show_menu, on crée une fonction lambda
 login_button = ttk.Button(
-    login_frame, 
-    text="Se connecter", 
-    command=lambda: show_menu(classe, start, end)
+    login_frame, text="Se connecter", command=lambda: show_menu(classe, start, end)
 )
 login_button.grid(row=4, pady=20)
 
