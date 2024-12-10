@@ -86,32 +86,20 @@ def show_menu(classe, start, end):
     menu_frame = ttk.Frame(window)
     menu_frame.grid(row=0, column=0)
 
-    # Add class selector
-    class_frame = ttk.Frame(menu_frame)
-    class_frame.grid(row=0, pady=5)
-    
-    class_label = ttk.Label(class_frame, text="Sélectionner une classe:")
-    class_label.pack(side='left', padx=5)
-    
-    class_combo = ttk.Combobox(class_frame, values=classesChoices, state='readonly')
-    class_combo.set(classe)  # Set current selection
-    class_combo.pack(side='left', padx=5)
-    class_combo.bind('<<ComboboxSelected>>', on_class_change)
-
-    # Menu options (updated row positions)
+    # Menu options
     schedule_button = ttk.Button(
         menu_frame, text="Emploi du temps", command=lambda: get_edt(classe, start, end)
     )
-    schedule_button.grid(row=1, pady=5)
+    schedule_button.grid(row=0, pady=5)
 
     grades_button = ttk.Button(menu_frame, text="Bulletins")
-    grades_button.grid(row=2, pady=5)
+    grades_button.grid(row=1, pady=5)
 
     absences_button = ttk.Button(menu_frame, text="Absences")
-    absences_button.grid(row=3, pady=5)
+    absences_button.grid(row=2, pady=5)
 
     settings_button = ttk.Button(menu_frame, text="Paramètres")
-    settings_button.grid(row=4, pady=5)
+    settings_button.grid(row=3, pady=5)
 
 
 def normalize_time(time_str):
@@ -204,6 +192,18 @@ def show_schedule(data, current_date=None):
         style="secondary.TButton",
     )
     back_button.pack(side="left")
+
+    # Add class selector
+    class_frame = ttk.Frame(header_frame)
+    class_frame.pack(side="left", padx=20)
+    
+    class_label = ttk.Label(class_frame, text="Classe:")
+    class_label.pack(side="left", padx=5)
+    
+    class_combo = ttk.Combobox(class_frame, values=classesChoices, state="readonly", width=15)
+    class_combo.set(classe)
+    class_combo.pack(side="left", padx=5)
+    class_combo.bind("<<ComboboxSelected>>", on_class_change)
 
     # Create navigation frame
     nav_frame = ttk.Frame(header_frame)
