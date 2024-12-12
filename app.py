@@ -11,7 +11,7 @@ def main():
     window.grid_rowconfigure(0, weight=1)
     window.grid_columnconfigure(0, weight=1)
 
-    classe = "INF1"  # Simple default value
+    classe = "INF1-B2"  # Simple default value
     start, end = get_week_dates(datetime.now())
 
     create_login_view(window, classe, start, end)
