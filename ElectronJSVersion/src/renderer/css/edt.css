@@ -150,10 +150,17 @@ button:hover {
 }
 
 .dropdown-content {
+    display: none;
+    position: absolute;
     background: white;
     border-radius: 6px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     border: 1px solid var(--gray-border);
+    z-index: 20;
+}
+
+.dropdown.open .dropdown-content {
+    display: block;
 }
 
 .dropdown-content a {

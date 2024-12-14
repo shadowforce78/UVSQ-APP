@@ -153,12 +153,28 @@ document.getElementById('today').addEventListener('click', () => {
 // Initialize
 const classes = ['inf1-b','mmi1-a2'];
 const dropdownContent = document.querySelector('.dropdown-content');
+const dropdownButton = document.querySelector('.dropbtn');
+const dropdown = document.querySelector('.dropdown');
+
+// Gestion du clic sur le bouton dropdown
+dropdownButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown.classList.toggle('open');
+});
+
+// Fermer le dropdown si on clique ailleurs
+document.addEventListener('click', () => {
+    dropdown.classList.remove('open');
+});
+
 classes.forEach(classe => {
     const a = document.createElement('a');
     a.href = '#';
     a.textContent = classe;
-    a.onclick = () => {
-        document.querySelector('.dropbtn').textContent = classe;
+    a.onclick = (e) => {
+        e.preventDefault();
+        dropdownButton.textContent = classe;
+        dropdown.classList.remove('open');
         displaySchedule();
     };
     dropdownContent.appendChild(a);
