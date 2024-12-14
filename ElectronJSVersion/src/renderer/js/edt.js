@@ -36,19 +36,19 @@ async function displaySchedule() {
     const weekDates = getWeekDates(currentDate);
     const classe = document.querySelector('.dropbtn').textContent;
     const scheduleData = await edt(classe, weekDates.start, weekDates.end);
-    
+
     const content = document.querySelector('.content');
     content.innerHTML = '';
 
     // Create weekly grid
     const grid = document.createElement('div');
     grid.className = 'schedule-grid';
-    
+
     // Add time header (empty cell for the corner)
     const timeHeader = document.createElement('div');
     timeHeader.className = 'time-header';
     grid.appendChild(timeHeader);
-    
+
     // Add headers for days
     const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
     days.forEach(day => {
@@ -64,7 +64,7 @@ async function displaySchedule() {
         timeSlot.className = 'time-slot';
         timeSlot.textContent = `${String(hour).padStart(2, '0')}:00`;
         grid.appendChild(timeSlot);
-        
+
         // Add empty cells for each day
         for (let i = 0; i < 5; i++) {
             const dayCell = document.createElement('div');
@@ -80,7 +80,7 @@ async function displaySchedule() {
         const eventDiv = createEventElement(event);
         eventsContainer.appendChild(eventDiv);
     });
-    
+
     grid.appendChild(eventsContainer);
     content.appendChild(grid);
 }
@@ -92,7 +92,7 @@ function parseEventTime(timeString) {
     const [startHour, startMinute] = start.split(':').map(Number);
     const [endHour, endMinute] = end.split(':').map(Number);
     const day = new Date(date.split('/').reverse().join('-')).getDay();
-    
+
     return {
         day: day === 0 ? 6 : day - 1, // Convertir dimanche(0) en 6 et décaler les autres jours
         startTime: startHour + startMinute / 60,
@@ -104,56 +104,83 @@ function calculateEventPosition(timeInfo) {
     const hourHeight = 60; // hauteur d'une heure en pixels
     const startHour = timeInfo.startTime - 8; // commence à 8h
     const duration = timeInfo.endTime - timeInfo.startTime;
-    
+
     const top = startHour * hourHeight;
     const height = duration * hourHeight - 2; // -2px pour l'espacement vertical
-    const left = (timeInfo.day) * (100/5) + 0.5; // +0.5% pour la marge gauche
-    const width = (100/5) - 1; // -1% pour éviter le chevauchement
-    
+    const left = (timeInfo.day) * (100 / 5) + 0.5; // +0.5% pour la marge gauche
+    const width = (100 / 5) - 1; // -1% pour éviter le chevauchement
+
     return { top, height, left, width };
 }
 
 function createEventElement(event) {
     const div = document.createElement('div');
     div.className = 'event';
-    
+
     const getElementContent = (label) => {
-        const element = event.elements.find(e => e.label === label);
+        if (!event || !event.elements) {
+            console.warn('Event or elements is undefined');
+            return 'Non spécifié';
+        }
+
+        // Normalisation pour la recherche insensible aux accents
+        const normalizedLabel = label.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const element = event.elements.find(e => {
+            if (!e || !e.label) return false;
+            return e.label.normalize('NFD').replace(/[\u0300-\u036f]/g, '') === normalizedLabel;
+        });
+
         return element ? element.content : 'Non spécifié';
     };
-    
+
     const timeData = getElementContent("Heure");
-    const subject = getElementContent("Matière");
+    const subject = getElementContent("Matiere");
     const group = getElementContent("Groupe");
-    let category = getElementContent("Catégorie d'événement");
+    let category = getElementContent('Catégorie d’événement')
+
+
     category = category.trim();
-    
-    // Ajouter la classe CSS selon le type de cours
     const categoryLower = category.toLowerCase();
+
+    console.log('Catégorie après trim:', category);
+    console.log('Catégorie en minuscules:', categoryLower);
+    console.log('Contient TD:', categoryLower.includes('td'));
+    console.log('Contient CM:', categoryLower.includes('cm'));
+    console.log('Contient TP:', categoryLower.includes('tp'));
+
+    // Ajouter la classe CSS selon le type de cours
+    let appliedClass = 'other';
     if (categoryLower.includes('td')) {
         div.classList.add('td');
+        appliedClass = 'td';
     } else if (categoryLower.includes('cm')) {
         div.classList.add('cm');
+        appliedClass = 'cm';
     } else if (categoryLower.includes('tp')) {
         div.classList.add('tp');
+        appliedClass = 'tp';
     } else {
         div.classList.add('other');
     }
-    
+
+    console.log('Classe appliquée:', appliedClass);
+    console.log('Classes finales:', div.className);
+    console.groupEnd();
+
     const timeInfo = parseEventTime(timeData);
     const position = calculateEventPosition(timeInfo);
-    
+
     div.style.top = `${position.top}px`;
     div.style.height = `${position.height}px`;
     div.style.left = `${position.left}%`;
     div.style.width = `${position.width}%`;
-    
+
     div.innerHTML = `
         <div class="event-time">${timeData}</div>
         <div class="event-subject">${subject}</div>
         <div class="event-details">${group} - ${category}</div>
     `;
-    
+
     return div;
 }
 
@@ -174,7 +201,7 @@ document.getElementById('today').addEventListener('click', () => {
 });
 
 // Initialize
-const classes = ['inf1-b','mmi1-a2'];
+const classes = ['inf1-b', 'mmi1-a2'];
 const dropdownContent = document.querySelector('.dropdown-content');
 const dropdownButton = document.querySelector('.dropbtn');
 const dropdown = document.querySelector('.dropdown');
