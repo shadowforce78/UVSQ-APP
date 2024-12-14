@@ -18,7 +18,7 @@ import { connection } from './API.js';
             if (result.error) {
                 errorMessage.innerText = result.error;
             } else {
-                console.log(result);
+                console.log('Connecté');
             }
         } catch (error) {
             console.error(error);
