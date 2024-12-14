@@ -40,7 +40,7 @@ async function displaySchedule() {
     grid.appendChild(timeHeader);
     
     // Add headers for days
-    const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
     days.forEach(day => {
         const dayHeader = document.createElement('div');
         dayHeader.className = 'day-header';
@@ -56,7 +56,7 @@ async function displaySchedule() {
         grid.appendChild(timeSlot);
         
         // Add empty cells for each day
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 5; i++) {
             const dayCell = document.createElement('div');
             dayCell.className = 'time-cell';
             grid.appendChild(dayCell);
@@ -97,8 +97,8 @@ function calculateEventPosition(timeInfo) {
     
     const top = startHour * hourHeight;
     const height = duration * hourHeight - 2; // -2px pour l'espacement vertical
-    const left = (timeInfo.day) * (100/6) + 0.5; // +0.5% pour la marge gauche
-    const width = (100/6) - 1; // -1% pour éviter le chevauchement
+    const left = (timeInfo.day) * (100/5) + 0.5; // +0.5% pour la marge gauche
+    const width = (100/5) - 1; // -1% pour éviter le chevauchement
     
     return { top, height, left, width };
 }

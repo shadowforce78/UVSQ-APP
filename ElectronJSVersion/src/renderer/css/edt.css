@@ -59,7 +59,7 @@ button:hover {
 
 .schedule-grid {
     display: grid;
-    grid-template-columns: 60px repeat(6, 1fr);
+    grid-template-columns: 60px repeat(5, 1fr); /* 5 colonnes au lieu de 6 */
     grid-template-rows: 40px repeat(11, 60px); /* header + 11 heures */
     position: relative;
     background: white;
