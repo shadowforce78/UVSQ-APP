@@ -1,5 +1,17 @@
 import { connection } from './API.js';
 
+// Fonction pour afficher le mot de passe
+function showPassword() {
+    const password = document.getElementById('password');
+    if (password.type === 'password') {
+        password.type = 'text';
+    } else {
+        password.type = 'password';
+    }
+}
+
+document.getElementById('showpwd').addEventListener('change', showPassword);
+
 (async () => {
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -19,6 +31,7 @@ import { connection } from './API.js';
                 errorMessage.innerText = result.error;
             } else {
                 console.log('Connecté');
+                window.location.href = '../html/home.html';
             }
         } catch (error) {
             console.error(error);
