@@ -201,3 +201,14 @@ button:hover {
     background-color: var(--primary-light);
     color: var(--primary-dark);
 }
+
+.week-label {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    color: var(--text-primary);
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}

@@ -37,6 +37,10 @@ async function displaySchedule() {
     const classe = document.querySelector('.dropbtn').textContent;
     const scheduleData = await edt(classe, weekDates.start, weekDates.end);
 
+    // Mise à jour du label de la semaine
+    const weekLabel = document.querySelector('.week-label');
+    weekLabel.textContent = `Semaine du ${formatDateFr(weekDates.start)} au ${formatDateFr(weekDates.end)}`;
+
     const content = document.querySelector('.content');
     content.innerHTML = '';
 
@@ -83,6 +87,15 @@ async function displaySchedule() {
 
     grid.appendChild(eventsContainer);
     content.appendChild(grid);
+}
+
+// Ajouter cette nouvelle fonction pour formater la date en français
+function formatDateFr(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('fr-FR', {
+        day: 'numeric',
+        month: 'long'
+    });
 }
 
 function parseEventTime(timeString) {
@@ -142,11 +155,6 @@ function createEventElement(event) {
     category = category.trim();
     const categoryLower = category.toLowerCase();
 
-    console.log('Catégorie après trim:', category);
-    console.log('Catégorie en minuscules:', categoryLower);
-    console.log('Contient TD:', categoryLower.includes('td'));
-    console.log('Contient CM:', categoryLower.includes('cm'));
-    console.log('Contient TP:', categoryLower.includes('tp'));
 
     // Ajouter la classe CSS selon le type de cours
     let appliedClass = 'other';
