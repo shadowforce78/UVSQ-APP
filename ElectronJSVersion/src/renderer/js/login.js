@@ -6,14 +6,20 @@ import { connection } from './API.js';
 
         const id = document.getElementById('username').value;
         const password = document.getElementById('password').value;
+        const errorMessage = document.getElementById('errorMessage');
 
         try {
             // Si ID n'est pas un nombre
             if (isNaN(id)) {
-                throw new Error('ID must be a number');
+                errorMessage.innerText = 'ID doit être un nombre';
+                return;
             }
             const result = await connection(id, password);
-            console.log(result);
+            if (result.error) {
+                errorMessage.innerText = result.error;
+            } else {
+                console.log(result);
+            }
         } catch (error) {
             console.error(error);
         }
