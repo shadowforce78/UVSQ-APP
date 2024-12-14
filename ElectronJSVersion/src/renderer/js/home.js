@@ -12,6 +12,11 @@ window.addEventListener('DOMContentLoaded', () => {
         return prenom || 'Nom Introuvable';
     }
 
+    function getEdt(){
+        window.location.href = 'edt.html';
+    }
+    document.getElementById('edt').addEventListener('click', getEdt);
+
     replaceText('prenom', getName(storedData));
 
     // Gestionnaire de déconnexion

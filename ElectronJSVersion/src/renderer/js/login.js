@@ -12,6 +12,7 @@ function showPassword() {
 
 document.getElementById('showpwd').addEventListener('change', showPassword);
 
+
 (async () => {
     // Vérifier s'il existe des identifiants stockés
     const storedId = localStorage.getItem('userId');

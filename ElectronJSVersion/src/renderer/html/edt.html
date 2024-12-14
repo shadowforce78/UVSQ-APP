@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <title>Emploi Du Temps - EDT</title>
+    <link rel="stylesheet" href="../css/edt.css">
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+            <div class="title">Emploi Du Temps</div>
+            <div class="menu">
+                <button id="prev">Semaine Précédente</button>
+                <button id="today">Aujourd'hui</button>
+                <button id="next">Semaine Suivante</button>
+                <!-- Dropdown classe -->
+                <div class="dropdown">
+                    <button class="dropbtn">Classe</button>
+                    <div class="dropdown-content">
+                    </div>
+                </div>
+            </div>
+            <div class="content"></div>
+
+        </div>
+
+        <script type="module" src="../js/edt.js"></script>
+</body>
+
+</html>
