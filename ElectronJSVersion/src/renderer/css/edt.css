@@ -58,17 +58,20 @@ button:hover {
 }
 
 .schedule-grid {
+    display: grid;
+    grid-template-columns: 60px repeat(6, 1fr);
+    grid-template-rows: 40px repeat(11, 60px); /* header + 11 heures */
+    position: relative;
     background: white;
     border-radius: 8px;
     box-shadow: var(--shadow);
-    grid-template-columns: 60px repeat(6, 1fr);
-    grid-template-rows: 40px repeat(10, 60px);
-    min-height: 640px;
-    padding: 0;
     overflow: hidden;
 }
 
 .day-header {
+    position: sticky;
+    top: 0;
+    z-index: 3;
     background-color: white;
     font-weight: 500;
     padding: 10px;
@@ -82,26 +85,46 @@ button:hover {
 }
 
 .time-slot {
-    color: var(--text-secondary);
-    font-size: 0.8em;
+    height: 60px;
     border-right: 1px solid var(--gray-border);
-    padding: 5px 8px;
+    border-bottom: 1px solid var(--gray-border);
+    font-size: 0.8em;
+    padding: 5px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    background-color: white;
+}
+
+.hour-start {
+    border-top: 1px solid var(--gray-border);
+    background-color: rgba(0,0,0,0.02);
 }
 
 .time-cell {
-    border-bottom: 1px solid var(--gray-border);
     border-right: 1px solid var(--gray-border);
+    border-bottom: 1px solid var(--gray-border);
+    background-color: white;
+}
+
+.events-container {
+    position: absolute;
+    top: 40px; /* hauteur du header */
+    left: 60px; /* largeur de la colonne des heures */
+    right: 0;
+    bottom: 0;
 }
 
 .event {
+    position: absolute;
     background-color: var(--primary-light);
-    border: none;
     border-left: 3px solid var(--primary-color);
     border-radius: 4px;
     padding: 8px;
-    margin: 2px;
     box-shadow: var(--shadow);
     transition: transform 0.2s;
+    overflow: hidden;
+    font-size: 0.85em;
 }
 
 .event:hover {

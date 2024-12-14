@@ -57,18 +57,21 @@ async function displaySchedule() {
         
         // Add empty cells for each day
         for (let i = 0; i < 6; i++) {
-            const emptyCell = document.createElement('div');
-            emptyCell.className = 'time-cell';
-            grid.appendChild(emptyCell);
+            const dayCell = document.createElement('div');
+            dayCell.className = 'time-cell';
+            grid.appendChild(dayCell);
         }
     }
 
-    // Process and display events
+    // Process and display events in a container
+    const eventsContainer = document.createElement('div');
+    eventsContainer.className = 'events-container';
     scheduleData.forEach(event => {
         const eventDiv = createEventElement(event);
-        grid.appendChild(eventDiv);
+        eventsContainer.appendChild(eventDiv);
     });
-
+    
+    grid.appendChild(eventsContainer);
     content.appendChild(grid);
 }
 
@@ -88,23 +91,21 @@ function parseEventTime(timeString) {
 }
 
 function calculateEventPosition(timeInfo) {
-    const hourHeight = 1; // 1 unité de grille par heure
-    const startRow = (timeInfo.startTime - 8) + 2; // +2 pour le header
-    const endRow = (timeInfo.endTime - 8) + 2;
-    const dayColumn = timeInfo.day + 2; // +2 car première colonne = heures, et grid commence à 1
-
-    return {
-        gridColumn: dayColumn,
-        gridRowStart: startRow,
-        gridRowEnd: endRow
-    };
+    const hourHeight = 60; // hauteur d'une heure en pixels
+    const startHour = timeInfo.startTime - 8; // commence à 8h
+    const duration = timeInfo.endTime - timeInfo.startTime;
+    
+    const top = startHour * hourHeight;
+    const height = duration * hourHeight;
+    const left = (timeInfo.day) * (100/6); // 6 jours, donc chaque jour fait 1/6 de la largeur
+    
+    return { top, height, left };
 }
 
 function createEventElement(event) {
     const div = document.createElement('div');
     div.className = 'event';
     
-    // Fonction utilitaire pour extraire le contenu en toute sécurité
     const getElementContent = (label) => {
         const element = event.elements.find(e => e.label === label);
         return element ? element.content : 'Non spécifié';
@@ -118,8 +119,10 @@ function createEventElement(event) {
     const timeInfo = parseEventTime(timeData);
     const position = calculateEventPosition(timeInfo);
     
-    div.style.gridColumn = position.gridColumn;
-    div.style.gridRow = `${position.gridRowStart} / ${position.gridRowEnd}`;
+    div.style.top = `${position.top}px`;
+    div.style.height = `${position.height}px`;
+    div.style.left = `${position.left}%`;
+    div.style.width = `${100/6 - 1}%`; // -1 pour l'espacement
     
     div.innerHTML = `
         <div class="event-time">${timeData}</div>
@@ -147,7 +150,7 @@ document.getElementById('today').addEventListener('click', () => {
 });
 
 // Initialize
-const classes = ['inf1-b'];
+const classes = ['inf1-b','mmi1-a2'];
 const dropdownContent = document.querySelector('.dropdown-content');
 classes.forEach(classe => {
     const a = document.createElement('a');
