@@ -1,109 +1,144 @@
-.schedule-grid {
-    display: grid;
-    grid-template-columns: 80px repeat(6, 1fr);
-    grid-template-rows: auto repeat(11, 60px); /* 1 header + 11 heures (de 8h à 18h) */
-    gap: 1px;
+:root {
+    --primary-color: #2196f3;
+    --primary-light: #e3f2fd;
+    --primary-dark: #1976d2;
+    --gray-light: #f5f5f5;
+    --gray-border: #e0e0e0;
+    --text-primary: #333;
+    --text-secondary: #666;
+    --shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.main {
     padding: 20px;
-    background-color: #f5f5f5;
-    position: relative;
+    background-color: var(--gray-light);
+    min-height: 100vh;
 }
 
-.day-header {
+.header {
+    margin-bottom: 30px;
+}
+
+.title {
+    font-size: 24px;
+    color: var(--primary-dark);
+    margin-bottom: 20px;
     font-weight: bold;
-    text-align: center;
-    padding: 10px;
-    background-color: white;
-    border-bottom: 2px solid #ddd;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-}
-
-.event {
-    background-color: #e3f2fd;
-    border: 1px solid #90caf9;
-    border-radius: 4px;
-    padding: 4px;
-    margin: 0;
-    overflow: hidden;
-    position: relative;
-    z-index: 1;
-}
-
-.event-time {
-    font-size: 0.8em;
-    color: #1976d2;
-}
-
-.event-subject {
-    font-size: 0.9em;
-    font-weight: bold;
-    margin: 2px 0;
-}
-
-.event-details {
-    font-size: 0.8em;
-    color: #666;
-}
-
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-}
-
-.dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
 }
 
 .menu {
-    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
 }
 
 button {
+    background-color: white;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
     padding: 8px 16px;
-    margin: 0 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.time-slot {
-    border-bottom: 1px solid #ddd;
-    background-color: white;
-    height: 60px;
-    display: flex;
-    align-items: flex-start;
-    padding-top: 5px;
-    font-size: 12px;
-    text-align: right;
-    padding-right: 10px;
-    color: #666;
-    grid-column: 1;
-    border-right: 1px solid #ddd;
-    background-color: white;
+button:hover {
+    background-color: var(--primary-color);
+    color: white;
 }
 
-.time-cell {
-    border-bottom: 1px solid #eee;
+.dropbtn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.schedule-grid {
+    background: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    grid-template-columns: 60px repeat(6, 1fr);
+    grid-template-rows: 40px repeat(10, 60px);
+    min-height: 640px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.day-header {
     background-color: white;
+    font-weight: 500;
+    padding: 10px;
+    border-bottom: 2px solid var(--primary-color);
+    color: var(--primary-dark);
 }
 
 .time-header {
+    background-color: white;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.time-slot {
+    color: var(--text-secondary);
+    font-size: 0.8em;
+    border-right: 1px solid var(--gray-border);
+    padding: 5px 8px;
+}
+
+.time-cell {
+    border-bottom: 1px solid var(--gray-border);
+    border-right: 1px solid var(--gray-border);
+}
+
+.event {
+    background-color: var(--primary-light);
+    border: none;
+    border-left: 3px solid var(--primary-color);
+    border-radius: 4px;
+    padding: 8px;
+    margin: 2px;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s;
+}
+
+.event:hover {
+    transform: scale(1.02);
+    z-index: 3;
+}
+
+.event-time {
+    color: var(--primary-dark);
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.event-subject {
+    color: var(--text-primary);
     font-weight: bold;
-    text-align: center;
-    padding: 10px;
-    background-color: #f0f0f0;
+    margin: 4px 0;
+}
+
+.event-details {
+    color: var(--text-secondary);
+}
+
+.dropdown-content {
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border: 1px solid var(--gray-border);
+}
+
+.dropdown-content a {
+    color: var(--text-primary);
+    padding: 10px 15px;
+    transition: background-color 0.2s;
+}
+
+.dropdown-content a:hover {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
 }

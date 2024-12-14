@@ -88,14 +88,15 @@ function parseEventTime(timeString) {
 }
 
 function calculateEventPosition(timeInfo) {
-    const startPixels = (timeInfo.startTime - 8) * 60; // 60px par heure
-    const duration = (timeInfo.endTime - timeInfo.startTime) * 60;
-    const dayOffset = timeInfo.day + 1;
+    const hourHeight = 1; // 1 unité de grille par heure
+    const startRow = (timeInfo.startTime - 8) + 2; // +2 pour le header
+    const endRow = (timeInfo.endTime - 8) + 2;
+    const dayColumn = timeInfo.day + 2; // +2 car première colonne = heures, et grid commence à 1
 
     return {
-        gridColumn: dayOffset + 1,
-        gridRowStart: Math.floor(startPixels / 60) + 2,
-        gridRowEnd: Math.floor((startPixels + duration) / 60) + 2
+        gridColumn: dayColumn,
+        gridRowStart: startRow,
+        gridRowEnd: endRow
     };
 }
 
