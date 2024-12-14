@@ -3,7 +3,7 @@ import { connection } from './API.js';
 (async () => {
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const id = document.getElementById('username').value;
         const password = document.getElementById('password').value;
 
