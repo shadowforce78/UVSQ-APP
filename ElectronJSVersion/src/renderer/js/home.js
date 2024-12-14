@@ -13,4 +13,12 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     replaceText('prenom', getName(storedData));
+
+    // Gestionnaire de déconnexion
+    document.getElementById('logout').addEventListener('click', () => {
+        localStorage.removeItem('userData');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('userPassword');
+        window.location.href = 'login.html';
+    });
 })
