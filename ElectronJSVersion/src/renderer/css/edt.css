@@ -1,0 +1,70 @@
+.schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    padding: 20px;
+}
+
+.day-header {
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    background-color: #f0f0f0;
+}
+
+.event {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.event-time {
+    font-weight: bold;
+    color: #666;
+}
+
+.event-subject {
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+.event-details {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.menu {
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 8px 16px;
+    margin: 0 5px;
+}

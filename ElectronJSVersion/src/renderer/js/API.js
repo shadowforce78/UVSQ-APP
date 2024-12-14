@@ -1,7 +1,7 @@
 const apiURL = 'http://localhost:8000/';
 
 const connectionENDPOINT = (id, password) => `uvsq/bulletin/${id}+${password}`;
-const edtENDPOINT = (classe, startdate, endate) => `/uvsq/edt/${classe}+${startdate}+${endate}`;
+const edtENDPOINT = (classe, startdate, endate) => `uvsq/edt/${classe}+${startdate}+${endate}`;
 
 // Partie connection
 export const connection = async (id, password) => {
