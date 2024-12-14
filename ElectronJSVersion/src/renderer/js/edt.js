@@ -1,11 +1,21 @@
 import { edt } from './API.js';
 
 // Date handling
-let currentDate = new Date();
+function adjustForWeekend(date) {
+    const day = date.getDay();
+    if (day === 0) { // Dimanche
+        date.setDate(date.getDate() + 1); // Aller au lundi suivant
+    } else if (day === 6) { // Samedi
+        date.setDate(date.getDate() + 2); // Aller au lundi suivant
+    }
+    return date;
+}
+
+let currentDate = adjustForWeekend(new Date());
 
 function getWeekDates(date) {
     const first = date.getDate() - date.getDay() + 1;
-    const last = first + 6;
+    const last = first + 4;
     const firstDay = new Date(date.setDate(first));
     const lastDay = new Date(date.setDate(last));
     return {
@@ -146,7 +156,7 @@ document.getElementById('next').addEventListener('click', () => {
 });
 
 document.getElementById('today').addEventListener('click', () => {
-    currentDate = new Date();
+    currentDate = adjustForWeekend(new Date());
     displaySchedule();
 });
 
