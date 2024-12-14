@@ -1,8 +1,6 @@
 import { connection } from './API.js';
 
 (async () => {
-    const api = (await import('./API.js')).default;
-
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
