@@ -125,7 +125,20 @@ function createEventElement(event) {
     const timeData = getElementContent("Heure");
     const subject = getElementContent("Matière");
     const group = getElementContent("Groupe");
-    const category = getElementContent("Catégorie d'événement");
+    let category = getElementContent("Catégorie d'événement");
+    category = category.trim();
+    
+    // Ajouter la classe CSS selon le type de cours
+    const categoryLower = category.toLowerCase();
+    if (categoryLower.includes('td')) {
+        div.classList.add('td');
+    } else if (categoryLower.includes('cm')) {
+        div.classList.add('cm');
+    } else if (categoryLower.includes('tp')) {
+        div.classList.add('tp');
+    } else {
+        div.classList.add('other');
+    }
     
     const timeInfo = parseEventTime(timeData);
     const position = calculateEventPosition(timeInfo);

@@ -7,6 +7,14 @@
     --text-primary: #333;
     --text-secondary: #666;
     --shadow: 0 2px 4px rgba(0,0,0,0.1);
+    --course-td: #4CAF50;
+    --course-td-light: #E8F5E9;
+    --course-cm: #FF9800;
+    --course-cm-light: #FFF3E0;
+    --course-tp: #E91E63;
+    --course-tp-light: #FCE4EC;
+    --course-other: #9C27B0;
+    --course-other-light: #F3E5F5;
 }
 
 .main {
@@ -132,6 +140,26 @@ button:hover {
 .event:hover {
     transform: scale(1.01);
     z-index: 10;
+}
+
+.event.td {
+    background-color: var(--course-td-light);
+    border-left: 3px solid var(--course-td);
+}
+
+.event.cm {
+    background-color: var(--course-cm-light);
+    border-left: 3px solid var(--course-cm);
+}
+
+.event.tp {
+    background-color: var(--course-tp-light);
+    border-left: 3px solid var(--course-tp);
+}
+
+.event.other {
+    background-color: var(--course-other-light);
+    border-left: 3px solid var(--course-other);
 }
 
 .event-time {
