@@ -13,6 +13,25 @@ function showPassword() {
 document.getElementById('showpwd').addEventListener('change', showPassword);
 
 (async () => {
+    // Vérifier s'il existe des identifiants stockés
+    const storedId = localStorage.getItem('userId');
+    const storedPassword = localStorage.getItem('userPassword');
+    
+    if (storedId && storedPassword) {
+        try {
+            const result = await connection(storedId, storedPassword);
+            if (!result.error) {
+                // Stocker les données de l'utilisateur
+                localStorage.setItem('userData', JSON.stringify(result));
+                console.log('Connexion automatique réussie');
+                window.location.href = '../html/home.html';
+                return;
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -30,6 +49,10 @@ document.getElementById('showpwd').addEventListener('change', showPassword);
             if (result.error) {
                 errorMessage.innerText = result.error;
             } else {
+                // Sauvegarder les identifiants et les données
+                localStorage.setItem('userId', id);
+                localStorage.setItem('userPassword', password);
+                localStorage.setItem('userData', JSON.stringify(result));
                 console.log('Connecté');
                 window.location.href = '../html/home.html';
             }

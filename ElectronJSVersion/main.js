@@ -10,7 +10,6 @@ const createWindow = () => {
         width: 800,
         height: 600,
         webPreferences: {
-            preload: path.join(__dirname, './src/renderer/js/preload.js'),
             // Ajouter ces options pour gérer le cache
             partition: 'persist:main',
             enableRemoteModule: true
