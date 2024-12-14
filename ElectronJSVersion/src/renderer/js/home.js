@@ -12,7 +12,7 @@ window.addEventListener('DOMContentLoaded', () => {
         return prenom || 'Nom Introuvable';
     }
 
-    function getEdt(){
+    function getEdt() {
         window.location.href = 'edt.html';
     }
     document.getElementById('edt').addEventListener('click', getEdt);
