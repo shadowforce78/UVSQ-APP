@@ -21,7 +21,7 @@ const createWindow = () => {
     app.setPath('userData', userDataPath);
 
     // win.loadFile('./src/renderer/index.html')
-    win.loadFile('./src/renderer/login.html')
+    win.loadFile('./src/renderer/html/login.html')
 }
 
 app.whenReady().then(() => {
