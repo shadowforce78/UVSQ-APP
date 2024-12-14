@@ -34,6 +34,11 @@ async function displaySchedule() {
     const grid = document.createElement('div');
     grid.className = 'schedule-grid';
     
+    // Add time header (empty cell for the corner)
+    const timeHeader = document.createElement('div');
+    timeHeader.className = 'time-header';
+    grid.appendChild(timeHeader);
+    
     // Add headers for days
     const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
     days.forEach(day => {
@@ -43,6 +48,21 @@ async function displaySchedule() {
         grid.appendChild(dayHeader);
     });
 
+    // Add time slots - only full hours
+    for (let hour = 8; hour <= 18; hour++) {
+        const timeSlot = document.createElement('div');
+        timeSlot.className = 'time-slot';
+        timeSlot.textContent = `${String(hour).padStart(2, '0')}:00`;
+        grid.appendChild(timeSlot);
+        
+        // Add empty cells for each day
+        for (let i = 0; i < 6; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.className = 'time-cell';
+            grid.appendChild(emptyCell);
+        }
+    }
+
     // Process and display events
     scheduleData.forEach(event => {
         const eventDiv = createEventElement(event);
@@ -50,6 +70,33 @@ async function displaySchedule() {
     });
 
     content.appendChild(grid);
+}
+
+function parseEventTime(timeString) {
+    // Format: "16/12/2024 13:00-17:00"
+    const [date, time] = timeString.split(' ');
+    const [start, end] = time.split('-');
+    const [startHour, startMinute] = start.split(':').map(Number);
+    const [endHour, endMinute] = end.split(':').map(Number);
+    const day = new Date(date.split('/').reverse().join('-')).getDay();
+    
+    return {
+        day: day === 0 ? 6 : day - 1, // Convertir dimanche(0) en 6 et décaler les autres jours
+        startTime: startHour + startMinute / 60,
+        endTime: endHour + endMinute / 60
+    };
+}
+
+function calculateEventPosition(timeInfo) {
+    const startPixels = (timeInfo.startTime - 8) * 60; // 60px par heure
+    const duration = (timeInfo.endTime - timeInfo.startTime) * 60;
+    const dayOffset = timeInfo.day + 1;
+
+    return {
+        gridColumn: dayOffset + 1,
+        gridRowStart: Math.floor(startPixels / 60) + 2,
+        gridRowEnd: Math.floor((startPixels + duration) / 60) + 2
+    };
 }
 
 function createEventElement(event) {
@@ -66,6 +113,12 @@ function createEventElement(event) {
     const subject = getElementContent("Matière");
     const group = getElementContent("Groupe");
     const category = getElementContent("Catégorie d'événement");
+    
+    const timeInfo = parseEventTime(timeData);
+    const position = calculateEventPosition(timeInfo);
+    
+    div.style.gridColumn = position.gridColumn;
+    div.style.gridRow = `${position.gridRowStart} / ${position.gridRowEnd}`;
     
     div.innerHTML = `
         <div class="event-time">${timeData}</div>
