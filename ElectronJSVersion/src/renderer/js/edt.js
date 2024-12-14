@@ -96,10 +96,11 @@ function calculateEventPosition(timeInfo) {
     const duration = timeInfo.endTime - timeInfo.startTime;
     
     const top = startHour * hourHeight;
-    const height = duration * hourHeight;
-    const left = (timeInfo.day) * (100/6); // 6 jours, donc chaque jour fait 1/6 de la largeur
+    const height = duration * hourHeight - 2; // -2px pour l'espacement vertical
+    const left = (timeInfo.day) * (100/6) + 0.5; // +0.5% pour la marge gauche
+    const width = (100/6) - 1; // -1% pour éviter le chevauchement
     
-    return { top, height, left };
+    return { top, height, left, width };
 }
 
 function createEventElement(event) {
@@ -122,7 +123,7 @@ function createEventElement(event) {
     div.style.top = `${position.top}px`;
     div.style.height = `${position.height}px`;
     div.style.left = `${position.left}%`;
-    div.style.width = `${100/6 - 1}%`; // -1 pour l'espacement
+    div.style.width = `${position.width}%`;
     
     div.innerHTML = `
         <div class="event-time">${timeData}</div>
