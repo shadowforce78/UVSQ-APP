@@ -5,8 +5,15 @@ window.addEventListener('DOMContentLoaded', () => {
     const ressources = releve["relevé"]["ressources"]
     const saes = releve["relevé"]["saes"]
 
-    // Suppression de la gestion du thème
-    
+    // Gestion du thème depuis le localStorage
+    function setTheme(isDark) {
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    }
+
+    // Initialisation du thème depuis le cache
+    const cachedTheme = localStorage.getItem('theme');
+    setTheme(cachedTheme === 'dark');
+
     const modal = document.getElementById('detailModal');
     const modalContent = document.getElementById('modalContent');
     const closeBtn = document.getElementsByClassName('close')[0];

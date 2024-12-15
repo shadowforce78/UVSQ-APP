@@ -19,10 +19,11 @@
 [data-theme="dark"] {
     --bg-color: #1a1a1a;
     --text-color: #ffffff;
-    --btn-bg: #3a3a3a;
+    --btn-bg: #2d2d2d;
     --btn-color: #ffffff;
-    --btn-hover-bg: #4a4a4a;
+    --btn-hover-bg: #3d3d3d;
     --btn-hover-color: #ffffff;
+    --modal-overlay: rgba(0, 0, 0, 0.8);
 }
 
 body {
