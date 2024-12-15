@@ -148,4 +148,9 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     displayGrades();
+
+    // Ajout de la navigation
+    document.getElementById('backButton').addEventListener('click', () => {
+        window.location.href = 'home.html';
+    });
 });

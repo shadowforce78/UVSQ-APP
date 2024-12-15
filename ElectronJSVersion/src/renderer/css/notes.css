@@ -202,3 +202,27 @@ body {
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
 }
+
+.nav-buttons {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+}
+
+.nav-button {
+    padding: 8px 16px;
+    background-color: var(--btn-bg);
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-button:hover {
+    background-color: var(--btn-hover-bg);
+    color: var(--btn-hover-color);
+    transform: translateY(-2px);
+}
