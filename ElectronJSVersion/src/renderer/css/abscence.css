@@ -1,0 +1,14 @@
+.main {
+    padding: 20px;
+}
+
+.absence {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.absence p {
+    margin: 5px 0;
+}

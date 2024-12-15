@@ -34,6 +34,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
     replaceText('prenom', getName(storedData));
 
+    function getAbscences(){
+        window.location.href = 'abscence.html';
+    }
+    document.getElementById('absences').addEventListener('click', getAbscences);
+
     // Gestionnaire de déconnexion
     document.getElementById('logout').addEventListener('click', () => {
         localStorage.removeItem('userData');
