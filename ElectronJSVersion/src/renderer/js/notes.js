@@ -34,23 +34,49 @@ window.addEventListener('DOMContentLoaded', () => {
         const noteStats = evaluation.note || { value: 'Non notée', min: 'N/A', max: 'N/A', moy: 'N/A' };
         
         evaluationModalContent.innerHTML = `
-            <h2>Détails de l'évaluation</h2>
             <div class="evaluation-details">
-                <p><strong>ID:</strong> ${evaluation.id}</p>
-                <p><strong>Coefficient:</strong> ${evaluation.coef}</p>
-                <p><strong>Date:</strong> ${new Date(evaluation.date_debut).toLocaleDateString()}</p>
-                <div class="note-stats">
-                    <p><strong>Note:</strong> ${noteStats.value}</p>
-                    <p><strong>Minimum:</strong> ${noteStats.min}</p>
-                    <p><strong>Maximum:</strong> ${noteStats.max}</p>
-                    <p><strong>Moyenne:</strong> ${noteStats.moy}</p>
+                <dl>
+                    <dt>ID</dt>
+                    <dd>${evaluation.id}</dd>
+                    <dt>Coefficient</dt>
+                    <dd>${evaluation.coef}</dd>
+                    <dt>Date</dt>
+                    <dd>${new Date(evaluation.date_debut).toLocaleDateString()}</dd>
+                </dl>
+                <div class="note-stats" role="region" aria-label="Statistiques de notes">
+                    <dl>
+                        <dt>Note</dt>
+                        <dd>${noteStats.value}</dd>
+                        <dt>Minimum</dt>
+                        <dd>${noteStats.min}</dd>
+                        <dt>Maximum</dt>
+                        <dd>${noteStats.max}</dd>
+                        <dt>Moyenne</dt>
+                        <dd>${noteStats.moy}</dd>
+                    </dl>
                 </div>
-                ${evaluation.remarque ? `<p><strong>Remarque:</strong> ${evaluation.remarque}</p>` : ''}
-                ${evaluation.description ? `<p><strong>Description:</strong> ${evaluation.description}</p>` : ''}
+                ${evaluation.remarque ? `<p aria-label="Remarque">${evaluation.remarque}</p>` : ''}
+                ${evaluation.description ? `<p aria-label="Description">${evaluation.description}</p>` : ''}
             </div>
         `;
         evaluationModal.style.display = 'block';
+        
+        // Focus management
+        const closeButton = evaluationModal.querySelector('.evaluation-close');
+        closeButton.focus();
     }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (evaluationModal.style.display === 'block') {
+                evaluationModal.style.display = 'none';
+            }
+            if (modal.style.display === 'block') {
+                modal.style.display = 'none';
+            }
+        }
+    });
 
     function showDetails(type, code) {
         const details = type === 'ressource' ? ressources[code] : saes[code];
@@ -107,6 +133,8 @@ window.addEventListener('DOMContentLoaded', () => {
         Object.entries(ues).forEach(([ueKey, ueData]) => {
             const ueElement = document.createElement('div');
             ueElement.className = 'ue-card';
+            ueElement.setAttribute('role', 'region');
+            ueElement.setAttribute('aria-label', `UE ${ueData.titre}`);
             
             ueElement.innerHTML = `
                 <div class="ue-header">

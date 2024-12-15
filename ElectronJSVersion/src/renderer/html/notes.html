@@ -1,41 +1,53 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <title>Page Principale</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relevé de notes - UVSQ</title>
     <link rel="stylesheet" href="../css/notes.css">
 </head>
-
 <body>
-    <div class="theme-toggle">
-        <label class="switch">
-            <input type="checkbox" id="themeToggle">
-            <span class="slider round"></span>
-        </label>
-        <span class="toggle-label">Mode sombre</span>
-    </div>
-    <div class="nav-buttons">
-        <button id="backButton" class="nav-button">Retour au menu</button>
-    </div>
-    <div class="main">
-        <div id="grades-container"></div>
-    </div>
-    <div id="detailModal" class="modal">
+    <header class="page-header" role="banner">
+        <nav class="nav-buttons" role="navigation" aria-label="Navigation principale">
+            <button id="backButton" class="nav-button" aria-label="Retour au menu principal">
+                <span aria-hidden="true">←</span> Retour au menu
+            </button>
+        </nav>
+        <div class="theme-toggle" role="complementary">
+            <label class="switch" for="themeToggle">
+                <input type="checkbox" id="themeToggle" role="switch" aria-label="Activer le mode sombre">
+                <span class="slider round"></span>
+            </label>
+            <span class="toggle-label">Mode sombre</span>
+        </div>
+    </header>
+
+    <main class="main-content" role="main">
+        <h1 class="visually-hidden">Relevé de notes</h1>
+        <div id="grades-container" role="region" aria-label="Liste des UEs et notes"></div>
+    </main>
+
+    <div id="detailModal" class="modal" role="dialog" aria-labelledby="detailModalTitle" aria-modal="true">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <div id="modalContent"></div>
+            <header class="modal-header">
+                <h2 id="detailModalTitle"></h2>
+                <button class="close" aria-label="Fermer la fenêtre de détails">&times;</button>
+            </header>
+            <div id="modalContent" role="region"></div>
         </div>
     </div>
-    <div id="evaluationModal" class="modal">
+
+    <div id="evaluationModal" class="modal" role="dialog" aria-labelledby="evaluationModalTitle" aria-modal="true">
         <div class="modal-content">
-            <span class="close evaluation-close">&times;</span>
-            <div id="evaluationModalContent"></div>
+            <header class="modal-header">
+                <h2 id="evaluationModalTitle">Détails de l'évaluation</h2>
+                <button class="close evaluation-close" aria-label="Fermer la fenêtre d'��valuation">&times;</button>
+            </header>
+            <div id="evaluationModalContent" role="region"></div>
         </div>
     </div>
+
     <script type="module" src="../js/notes.js"></script>
 </body>
-
 </html>
