@@ -1,5 +1,21 @@
 import { edt } from './API.js';
 
+// Gestion du thème
+function setTheme(isDark) {
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+}
+
+// Initialisation du thème
+const savedTheme = localStorage.getItem('theme') || 'light';
+setTheme(savedTheme === 'dark');
+document.getElementById('themeToggle').checked = savedTheme === 'dark';
+
+// Event listener pour le toggle
+document.getElementById('themeToggle').addEventListener('change', (e) => {
+    setTheme(e.target.checked);
+})
+
 // Date handling
 function adjustForWeekend(date) {
     const day = date.getDay();
