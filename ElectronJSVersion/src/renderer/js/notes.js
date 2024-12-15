@@ -1,27 +1,12 @@
 window.addEventListener('DOMContentLoaded', () => {
-
     const userData = localStorage.getItem('userData');
     const releve = JSON.parse(userData);
     const ues = releve["relevé"]["ues"]
     const ressources = releve["relevé"]["ressources"]
     const saes = releve["relevé"]["saes"]
 
-    // Gestion du thème
-    function setTheme(isDark) {
-        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    }
-
-    // Initialisation du thème
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    setTheme(savedTheme === 'dark');
-    document.getElementById('themeToggle').checked = savedTheme === 'dark';
-
-    // Event listener pour le toggle
-    document.getElementById('themeToggle').addEventListener('change', (e) => {
-        setTheme(e.target.checked);
-    });
-
+    // Suppression de la gestion du thème
+    
     const modal = document.getElementById('detailModal');
     const modalContent = document.getElementById('modalContent');
     const closeBtn = document.getElementsByClassName('close')[0];
@@ -127,6 +112,30 @@ window.addEventListener('DOMContentLoaded', () => {
         if (e.target === evaluationModal) evaluationModal.style.display = 'none';
     };
 
+    // Gestion du responsive pour les modales
+    let touchStartY = 0;
+    let touchEndY = 0;
+
+    function handleSwipeGesture(modal) {
+        const minSwipeDistance = 50;
+        const swipeDistance = touchEndY - touchStartY;
+
+        if (swipeDistance > minSwipeDistance) {
+            modal.style.display = 'none';
+        }
+    }
+
+    [modal, evaluationModal].forEach(modal => {
+        modal.addEventListener('touchstart', e => {
+            touchStartY = e.touches[0].clientY;
+        }, false);
+
+        modal.addEventListener('touchend', e => {
+            touchEndY = e.changedTouches[0].clientY;
+            handleSwipeGesture(modal);
+        }, false);
+    });
+
     function displayGrades() {
         const container = document.getElementById('grades-container');
         
@@ -171,6 +180,17 @@ window.addEventListener('DOMContentLoaded', () => {
                 const type = item.dataset.type;
                 const code = item.dataset.code;
                 showDetails(type, code);
+            });
+        });
+
+        // Ajout de la gestion des événements tactiles
+        document.querySelectorAll('.grade-item').forEach(item => {
+            item.addEventListener('touchend', e => {
+                if (Math.abs(touchEndY - touchStartY) < 10) {
+                    const type = item.dataset.type;
+                    const code = item.dataset.code;
+                    showDetails(type, code);
+                }
             });
         });
     }

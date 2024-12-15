@@ -33,66 +33,28 @@ body {
     font-size: 16px;
 }
 
-/* Theme toggle styles - Même style que login.css */
-.theme-toggle {
-    position: absolute;
-    top: 20px;
-    right: 20px;
+.page-header {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.nav-buttons {
+    position: static;
     display: flex;
-    align-items: center;
-    gap: 10px;
+    justify-content: flex-start;
+}
+
+.nav-button {
+    padding: 8px 16px;
+    background-color: var(--btn-bg);
     color: var(--text-color);
-}
-
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-}
-
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: .4s;
-}
-
-.switch input:checked+.slider {
-    background-color: #007bff;
-}
-
-.switch input:checked+.slider:before {
-    transform: translateX(26px);
-}
-
-.slider.round {
-    border-radius: 34px;
-}
-
-.slider.round:before {
-    border-radius: 50%;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .ue-card {
@@ -230,30 +192,6 @@ body {
     gap: 8px;
 }
 
-.nav-buttons {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-}
-
-.nav-button {
-    padding: 8px 16px;
-    background-color: var(--btn-bg);
-    color: var(--text-color);
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.nav-button:hover {
-    background-color: var(--btn-hover-bg);
-    color: var(--btn-hover-color);
-    transform: translateY(-2px);
-}
-
 /* Styles d'accessibilité de base */
 .visually-hidden {
     position: absolute;
@@ -276,14 +214,128 @@ body {
     outline: none;
 }
 
-.page-header {
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* Responsive design */
+@media (max-width: 1024px) {
+    .ue-card {
+        margin: 15px;
+        padding: 15px;
+    }
+
+    .detail-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+    }
 }
 
-/* Responsive design */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+
+    .page-header {
+        padding: 0.5rem;
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .nav-buttons {
+        position: static;
+        margin-bottom: 15px;
+    }
+
+    .nav-button {
+        padding: 6px 12px;
+    }
+
+    .ue-card {
+        margin: 10px;
+        padding: 12px;
+    }
+
+    .ue-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 5% auto;
+        padding: 15px;
+    }
+
+    .close {
+        top: 5px;
+        right: 10px;
+    }
+
+    .grade-item {
+        padding: 12px 8px;
+    }
+
+    .note-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .ue-card {
+        margin: 8px;
+        padding: 10px;
+    }
+
+    .grade-item {
+        flex-direction: column;
+        gap: 5px;
+        align-items: flex-start;
+    }
+
+    .evaluation-details {
+        padding: 10px;
+    }
+
+    .modal-content {
+        margin: 2% auto;
+    }
+
+    .nav-button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) {
+    .grade-item {
+        padding: 12px;
+        margin: 5px 0;
+    }
+
+    .ue-card:hover {
+        transform: none;
+    }
+
+    .evaluation-clickable:hover {
+        transform: none;
+    }
+
+    .nav-button:hover {
+        transform: none;
+    }
+}
+
+/* Orientation Specific Styles */
+@media (orientation: landscape) and (max-height: 600px) {
+    .modal-content {
+        margin: 2vh auto;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .ue-card {
+        margin: 8px;
+    }
+}
+
 @media (max-width: 768px) {
     .modal-content {
         width: 90%;
