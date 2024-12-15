@@ -24,7 +24,7 @@ function getWeekDates(date) {
     const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), first);
     const lastDay = new Date(firstDay.getTime());
     lastDay.setDate(firstDay.getDate() + 4);
-    
+
     return {
         start: formatDate(firstDay),
         end: formatDate(lastDay)
@@ -180,9 +180,6 @@ function createEventElement(event) {
         div.classList.add('other');
     }
 
-    console.log('Classe appliquée:', appliedClass);
-    console.log('Classes finales:', div.className);
-    console.groupEnd();
 
     const timeInfo = parseEventTime(timeData);
     const position = calculateEventPosition(timeInfo);
@@ -215,6 +212,10 @@ document.getElementById('next').addEventListener('click', () => {
 document.getElementById('today').addEventListener('click', () => {
     currentDate = adjustForWeekend(new Date());
     displaySchedule();
+});
+
+document.getElementById('back').addEventListener('click', () => {
+    window.location.href = 'home.html';
 });
 
 // Initialize

@@ -65,6 +65,17 @@ button:hover {
     color: white;
 }
 
+.back-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    margin-right: auto;
+}
+
+.back-btn:hover {
+    background-color: #c82333;
+}
+
 .schedule-grid {
     display: grid;
     grid-template-columns: 60px repeat(5, 1fr); /* 5 colonnes au lieu de 6 */
