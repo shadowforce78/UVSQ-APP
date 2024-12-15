@@ -13,11 +13,18 @@ function adjustForWeekend(date) {
 
 let currentDate = adjustForWeekend(new Date());
 
+// Ajouter cette fonction utilitaire
+function cloneDate(date) {
+    return new Date(date.getTime());
+}
+
 function getWeekDates(date) {
-    const first = date.getDate() - date.getDay() + 1;
-    const last = first + 4;
-    const firstDay = new Date(date.setDate(first));
-    const lastDay = new Date(date.setDate(last));
+    const currentDate = cloneDate(date);
+    const first = currentDate.getDate() - currentDate.getDay() + 1;
+    const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), first);
+    const lastDay = new Date(firstDay.getTime());
+    lastDay.setDate(firstDay.getDate() + 4);
+    
     return {
         start: formatDate(firstDay),
         end: formatDate(lastDay)
@@ -91,10 +98,12 @@ async function displaySchedule() {
 
 // Ajouter cette nouvelle fonction pour formater la date en français
 function formatDateFr(dateStr) {
-    const date = new Date(dateStr);
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
     return date.toLocaleDateString('fr-FR', {
         day: 'numeric',
-        month: 'long'
+        month: 'long',
+        year: 'numeric'
     });
 }
 
