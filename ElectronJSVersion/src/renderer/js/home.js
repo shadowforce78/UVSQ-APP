@@ -33,6 +33,11 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     document.getElementById('edt').addEventListener('click', getEdt);
 
+    function getNotes(){
+        window.location.href = 'notes.html';
+    }
+    document.getElementById('notes').addEventListener('click', getNotes);
+
     replaceText('prenom', getName(storedData));
 
     // Gestionnaire de déconnexion
