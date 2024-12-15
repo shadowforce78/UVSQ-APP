@@ -103,9 +103,20 @@ async function displaySchedule() {
     // Process and display events in a container
     const eventsContainer = document.createElement('div');
     eventsContainer.className = 'events-container';
-    scheduleData.forEach(event => {
-        const eventDiv = createEventElement(event);
-        eventsContainer.appendChild(eventDiv);
+    
+    const eventGroups = findOverlappingEvents(scheduleData);
+    
+    Object.values(eventGroups).forEach(dayEvents => {
+        dayEvents.forEach((eventData, index) => {
+            const position = calculateEventPosition(
+                eventData.timeInfo,
+                eventData,
+                eventData.exactOverlap,
+                index
+            );
+            const eventDiv = createEventElement(eventData.event, position);
+            eventsContainer.appendChild(eventDiv);
+        });
     });
 
     grid.appendChild(eventsContainer);
@@ -138,43 +149,60 @@ function parseEventTime(timeString) {
     };
 }
 
-function calculateEventPosition(timeInfo) {
-    const hourHeight = 60; // hauteur d'une heure en pixels
-    const startHour = timeInfo.startTime - 8; // commence à 8h
+function calculateEventPosition(timeInfo, event, overlappingGroup = [], eventIndex = 0) {
+    const hourHeight = 60;
+    const startHour = timeInfo.startTime - 8;
     const duration = timeInfo.endTime - timeInfo.startTime;
-
+    
     const top = startHour * hourHeight;
-    const height = duration * hourHeight - 2; // -2px pour l'espacement vertical
-    const left = (timeInfo.day) * (100 / 5) + 0.5; // +0.5% pour la marge gauche
-    const width = (100 / 5) - 1; // -1% pour éviter le chevauchement
+    const height = duration * hourHeight - 2;
+    
+    const cellWidth = 100 / 5; // Largeur d'une cellule journalière
+    const dayOffset = timeInfo.day * cellWidth;
 
-    return { top, height, left, width };
+    // Si l'événement a des chevauchements exacts
+    if (event.exactOverlap && event.exactOverlap.length > 0) {
+        const width = cellWidth / (event.exactOverlap.length + 1);
+        const isEven = eventIndex % 2 === 0;
+        const left = dayOffset + (width * eventIndex);
+        return { top, height, left, width };
+    } else {
+        // Pas de chevauchement exact, prendre toute la largeur
+        return {
+            top,
+            height,
+            left: dayOffset,
+            width: cellWidth
+        };
+    }
 }
 
-function createEventElement(event) {
+// Déplacer getElementContent en tant que fonction globale
+function getElementContent(event, label) {
+    if (!event || !event.elements) {
+        console.warn('Event or elements is undefined');
+        return 'Non spécifié';
+    }
+
+    // Normalisation pour la recherche insensible aux accents
+    const normalizedLabel = label.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const element = event.elements.find(e => {
+        if (!e || !e.label) return false;
+        return e.label.normalize('NFD').replace(/[\u0300-\u036f]/g, '') === normalizedLabel;
+    });
+
+    return element ? element.content : 'Non spécifié';
+}
+
+// Modifier createEventElement pour utiliser la nouvelle fonction globale
+function createEventElement(event, position) {
     const div = document.createElement('div');
     div.className = 'event';
 
-    const getElementContent = (label) => {
-        if (!event || !event.elements) {
-            console.warn('Event or elements is undefined');
-            return 'Non spécifié';
-        }
-
-        // Normalisation pour la recherche insensible aux accents
-        const normalizedLabel = label.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-        const element = event.elements.find(e => {
-            if (!e || !e.label) return false;
-            return e.label.normalize('NFD').replace(/[\u0300-\u036f]/g, '') === normalizedLabel;
-        });
-
-        return element ? element.content : 'Non spécifié';
-    };
-
-    const timeData = getElementContent("Heure");
-    const subject = getElementContent("Matiere");
-    const group = getElementContent("Groupe");
-    let category = getElementContent('Catégorie d’événement')
+    const timeData = getElementContent(event, "Heure");
+    const subject = getElementContent(event, "Matiere");
+    const group = getElementContent(event, "Groupe");
+    let category = getElementContent(event, 'Catégorie d’événement')
 
 
     category = category.trim();
@@ -197,9 +225,6 @@ function createEventElement(event) {
     }
 
 
-    const timeInfo = parseEventTime(timeData);
-    const position = calculateEventPosition(timeInfo);
-
     div.style.top = `${position.top}px`;
     div.style.height = `${position.height}px`;
     div.style.left = `${position.left}%`;
@@ -212,6 +237,35 @@ function createEventElement(event) {
     `;
 
     return div;
+}
+
+function findOverlappingEvents(events) {
+    const eventGroups = {};
+    
+    events.forEach(event => {
+        const timeData = parseEventTime(getElementContent(event, "Heure"));
+        const dayKey = timeData.day;
+        if (!eventGroups[dayKey]) {
+            eventGroups[dayKey] = [];
+        }
+        eventGroups[dayKey].push({
+            event,
+            timeInfo: timeData
+        });
+    });
+
+    // Pour chaque jour, trouver les événements qui se chevauchent exactement
+    Object.values(eventGroups).forEach(dayEvents => {
+        dayEvents.forEach(current => {
+            current.exactOverlap = dayEvents.filter(other => 
+                current !== other && 
+                current.timeInfo.startTime === other.timeInfo.startTime &&
+                current.timeInfo.endTime === other.timeInfo.endTime
+            );
+        });
+    });
+
+    return eventGroups;
 }
 
 // Event listeners
