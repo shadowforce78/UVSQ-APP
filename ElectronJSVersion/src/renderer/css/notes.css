@@ -175,3 +175,20 @@ body {
     background: rgba(128, 128, 128, 0.1);
     border-radius: 5px;
 }
+
+.evaluation-clickable {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.evaluation-clickable:hover {
+    transform: scale(1.02);
+    background: rgba(128, 128, 128, 0.2);
+}
+
+.evaluation-details {
+    padding: 15px;
+    background: rgba(128, 128, 128, 0.1);
+    border-radius: 8px;
+    margin-top: 10px;
+}

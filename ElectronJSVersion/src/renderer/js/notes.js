@@ -26,40 +26,73 @@ window.addEventListener('DOMContentLoaded', () => {
     const modalContent = document.getElementById('modalContent');
     const closeBtn = document.getElementsByClassName('close')[0];
 
+    const evaluationModal = document.getElementById('evaluationModal');
+    const evaluationModalContent = document.getElementById('evaluationModalContent');
+    const evaluationCloseBtn = document.getElementsByClassName('evaluation-close')[0];
+
+    function showEvaluationDetails(evaluation) {
+        evaluationModalContent.innerHTML = `
+            <h2>Détails de l'évaluation</h2>
+            <div class="evaluation-details">
+                <p><strong>ID:</strong> ${evaluation.id}</p>
+                <p><strong>Coefficient:</strong> ${evaluation.coef}</p>
+                <p><strong>Date:</strong> ${new Date(evaluation.date_debut).toLocaleDateString()}</p>
+                <p><strong>Note:</strong> ${evaluation.note?.value || 'Non notée'}</p>
+                ${evaluation.remarque ? `<p><strong>Remarque:</strong> ${evaluation.remarque}</p>` : ''}
+                ${evaluation.description ? `<p><strong>Description:</strong> ${evaluation.description}</p>` : ''}
+            </div>
+        `;
+        evaluationModal.style.display = 'block';
+    }
+
     function showDetails(type, code) {
         const details = type === 'ressource' ? ressources[code] : saes[code];
         if (!details) return;
 
-        // Création d'un tableau des évaluations disponibles
-        const evaluations = details.evaluations.map(evaluation => ({
-            id: evaluation.id,
-            coef: evaluation.coef,
-            date_debut: new Date(evaluation.date_debut).toLocaleDateString(),
-            note: evaluation.note || 'Non notée'
-        }));
+        let evaluationsHTML = '';
+        
+        if (details.evaluations && details.evaluations.length > 0) {
+            evaluationsHTML = details.evaluations.map((evaluation, index) => `
+                <div class="detail-item evaluation-clickable" data-evaluation-index="${index}">
+                    <h3>Évaluation ${index + 1}</h3>
+                    <p><strong>ID:</strong> ${evaluation.id}</p>
+                    <p><strong>Note:</strong> ${evaluation.note?.value || 'Non notée'}</p>
+                    ${evaluation.description ? `<p><strong>Description:</strong> ${evaluation.description}</p>` : ''}
+                </div>
+            `).join('');
+        } else {
+            evaluationsHTML = '<div class="detail-item">Aucune évaluation disponible</div>';
+        }
         
         modalContent.innerHTML = `
             <h2>${code} - ${details.titre || 'Sans titre'}</h2>
+            <p><strong>Code Apogée:</strong> ${details.code_apogee || 'Non spécifié'}</p>
             <div class="detail-grid">
-                ${evaluations.length > 0 ? 
-                    evaluations.map(evaluation => `
-                        <div class="detail-item">
-                            <strong>Évaluation ${evaluation.id}:</strong> ${evaluation.note}<br>
-                            <strong>Coefficient:</strong> ${evaluation.coef}<br>
-                            <strong>Date:</strong> ${evaluation.date_debut}
-                        </div>
-                    `).join('')
-                    : '<div class="detail-item">Aucune note disponible</div>'
-                }
+                ${evaluationsHTML}
             </div>
         `;
         modal.style.display = 'block';
+
+        // Ajouter les écouteurs d'événements pour les évaluations
+        document.querySelectorAll('.evaluation-clickable').forEach(item => {
+            item.addEventListener('click', () => {
+                const index = item.dataset.evaluationIndex;
+                showEvaluationDetails(details.evaluations[index]);
+            });
+        });
     }
 
     closeBtn.onclick = () => modal.style.display = 'none';
     window.onclick = (e) => {
         if (e.target === modal) modal.style.display = 'none';
+        if (e.target === evaluationModal) evaluationModal.style.display = 'none';
     }
+
+    evaluationCloseBtn.onclick = () => evaluationModal.style.display = 'none';
+    window.onclick = (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+        if (e.target === evaluationModal) evaluationModal.style.display = 'none';
+    };
 
     function displayGrades() {
         const container = document.getElementById('grades-container');
