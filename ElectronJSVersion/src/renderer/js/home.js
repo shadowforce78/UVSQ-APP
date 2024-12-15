@@ -8,12 +8,6 @@ window.addEventListener('DOMContentLoaded', () => {
     // Initialisation du thème
     const savedTheme = localStorage.getItem('theme') || 'light';
     setTheme(savedTheme === 'dark');
-    document.getElementById('themeToggle').checked = savedTheme === 'dark';
-
-    // Event listener pour le toggle
-    document.getElementById('themeToggle').addEventListener('change', (e) => {
-        setTheme(e.target.checked);
-    });
 
     const replaceText = (selector, text) => {
         const elements = document.getElementsByClassName(selector)
