@@ -31,13 +31,20 @@ window.addEventListener('DOMContentLoaded', () => {
     const evaluationCloseBtn = document.getElementsByClassName('evaluation-close')[0];
 
     function showEvaluationDetails(evaluation) {
+        const noteStats = evaluation.note || { value: 'Non notée', min: 'N/A', max: 'N/A', moy: 'N/A' };
+        
         evaluationModalContent.innerHTML = `
             <h2>Détails de l'évaluation</h2>
             <div class="evaluation-details">
                 <p><strong>ID:</strong> ${evaluation.id}</p>
                 <p><strong>Coefficient:</strong> ${evaluation.coef}</p>
                 <p><strong>Date:</strong> ${new Date(evaluation.date_debut).toLocaleDateString()}</p>
-                <p><strong>Note:</strong> ${evaluation.note?.value || 'Non notée'}</p>
+                <div class="note-stats">
+                    <p><strong>Note:</strong> ${noteStats.value}</p>
+                    <p><strong>Minimum:</strong> ${noteStats.min}</p>
+                    <p><strong>Maximum:</strong> ${noteStats.max}</p>
+                    <p><strong>Moyenne:</strong> ${noteStats.moy}</p>
+                </div>
                 ${evaluation.remarque ? `<p><strong>Remarque:</strong> ${evaluation.remarque}</p>` : ''}
                 ${evaluation.description ? `<p><strong>Description:</strong> ${evaluation.description}</p>` : ''}
             </div>
