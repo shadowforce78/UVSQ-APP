@@ -1,4 +1,20 @@
 window.addEventListener('DOMContentLoaded', () => {
+    // Gestion du thème
+    function setTheme(isDark) {
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    // Initialisation du thème
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme === 'dark');
+    document.getElementById('themeToggle').checked = savedTheme === 'dark';
+
+    // Event listener pour le toggle
+    document.getElementById('themeToggle').addEventListener('change', (e) => {
+        setTheme(e.target.checked);
+    });
+
     const replaceText = (selector, text) => {
         const elements = document.getElementsByClassName(selector)
         if (elements.length > 0) elements[0].innerText = text
