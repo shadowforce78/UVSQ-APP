@@ -1,6 +1,0 @@
-{
-    "appId": "com.saumon.uvsq",
-    "appName": "UVSQ-App",
-    "webDir": "src/renderer/html",
-    "bundledWebRuntime": false
-}
