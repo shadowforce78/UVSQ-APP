@@ -10,7 +10,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/cli": "^6.2.0",
+    "@capacitor/core": "^6.2.0",
+    "@capacitor/ios": "^6.2.0",
     "axios": "^1.7.9",
-    "electron": "^33.2.1"
+    "electron": "^33.2.1",
+    "electron-packager": "^17.1.2"
   }
 }
