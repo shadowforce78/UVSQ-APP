@@ -1,5 +1,5 @@
 {
   "appId": "com.saumon.uvsq",
   "appName": "UVSQ-App",
-  "webDir": "www"
+  "webDir": "src/renderer/html"
 }
