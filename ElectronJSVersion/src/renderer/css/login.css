@@ -16,6 +16,19 @@
     --accent-hover: #0056b3;
 }
 
+.theme-toggle {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+}
+
+.theme-toggle:hover {
+    background-color: var(--shadow-color);
+}
 body {
     color: var(--body-color);
 }

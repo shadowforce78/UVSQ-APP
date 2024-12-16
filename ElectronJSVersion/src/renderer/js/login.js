@@ -13,19 +13,27 @@ function showPassword() {
 document.getElementById('showpwd').addEventListener('change', showPassword);
 
 // Gestion du thème
+// Gestion du thème
+const themeToggle = document.getElementById('themeToggle');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
 function setTheme(isDark) {
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    themeToggle.textContent = isDark ? '☀️' : '🌙';
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
 }
 
-// Initialisation du thème
-const savedTheme = localStorage.getItem('theme') || 'light';
-setTheme(savedTheme === 'dark');
-document.getElementById('themeToggle').checked = savedTheme === 'dark';
+// Initialiser le thème
+const savedTheme = localStorage.getItem('theme');
+const initialTheme = savedTheme 
+    ? savedTheme === 'dark'
+    : prefersDark.matches;
+setTheme(initialTheme);
 
-// Event listener pour le toggle
-document.getElementById('themeToggle').addEventListener('change', (e) => {
-    setTheme(e.target.checked);
+// Écouteur d'événement pour le bouton
+themeToggle.addEventListener('click', () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    setTheme(!isDark);
 });
 
 (async () => {
