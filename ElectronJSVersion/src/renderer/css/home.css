@@ -6,20 +6,20 @@
 }
 
 :root {
-    --bg-color: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    --bg-color: linear-gradient(135deg, #f5f7fa 0%, #e3eeff 100%);
     --text-color: #2d3436;
     --btn-bg: white;
     --btn-color: #2d3436;
-    --btn-hover-bg: #2d3436;
+    --btn-hover-bg: #007bff;
     --btn-hover-color: white;
 }
 
 [data-theme="dark"] {
     --bg-color: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
     --text-color: #ffffff;
-    --btn-bg: #3a3a3a;
+    --btn-bg: #2d2d2d;
     --btn-color: #ffffff;
-    --btn-hover-bg: #4a4a4a;
+    --btn-hover-bg: #007bff;
     --btn-hover-color: #ffffff;
 }
 

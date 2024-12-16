@@ -7,10 +7,10 @@
 
 :root {
     --bg-color: #f5f7fa;
-    --text-color: #1a1a1a;
+    --text-color: #2d3436;
     --btn-bg: #ffffff;
     --btn-color: #2d3436;
-    --btn-hover-bg: #2d3436;
+    --btn-hover-bg: #007bff;
     --btn-hover-color: #ffffff;
     --focus-outline: 3px solid #007bff;
     --modal-overlay: rgba(0, 0, 0, 0.7);
@@ -21,7 +21,7 @@
     --text-color: #ffffff;
     --btn-bg: #2d2d2d;
     --btn-color: #ffffff;
-    --btn-hover-bg: #3d3d3d;
+    --btn-hover-bg: #007bff;
     --btn-hover-color: #ffffff;
     --modal-overlay: rgba(0, 0, 0, 0.8);
 }
