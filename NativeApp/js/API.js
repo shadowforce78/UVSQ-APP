@@ -1,4 +1,4 @@
-const apiURL = 'http://localhost:8000/';
+const apiURL = 'http://192.168.1.200:8000/';
 
 const connectionENDPOINT = (id, password) => `uvsq/bulletin/${id}+${password}`;
 const edtENDPOINT = (classe, startdate, endate) => `uvsq/edt/${classe}+${startdate}+${endate}`;
@@ -6,9 +6,7 @@ const edtENDPOINT = (classe, startdate, endate) => `uvsq/edt/${classe}+${startda
 // Partie connection
 export const connection = async (id, password) => {
     try {
-        const response = await fetch(apiURL + connectionENDPOINT(id, password), {
-            mode: 'cors'
-        });
+        const response = await fetch(apiURL + connectionENDPOINT(id, password));
         const data = await response.json();
         return data;
     } catch (error) {
