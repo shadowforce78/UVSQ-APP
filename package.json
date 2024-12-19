@@ -5,15 +5,15 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-packager . UVSQ-APP --platform=win32,linux,mas --arch=x64 --out=dist --overwrite"
+    "build": "electron-packager . UVSQ-APP --platform=win32,linux --arch=x64 --out=dist --overwrite"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.7.9",
-    "electron-packager": "^17.1.2"
+    "axios": "^1.7.9"
   },
   "devDependencies": {
+    "@electron/packager": "^18.3.6",
     "electron": "^33.2.1"
   }
 }
