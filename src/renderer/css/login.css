@@ -30,7 +30,7 @@
     background-color: var(--shadow-color);
 }
 body {
-    color: var(--body-color);
+    color: var(--bg-color);
 }
 
 .login-container {
@@ -43,10 +43,8 @@ body {
 }
 
 .login-form {
-    background-color: var(--form-bg);
     padding: 2rem;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     color: var(--text-color);
 }
 
