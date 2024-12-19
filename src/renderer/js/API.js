@@ -14,9 +14,16 @@ export const connection = async (id, password) => {
         const response = await fetch(corsProxy + apiURL + connectionENDPOINT(id, password), {
             method: 'GET',
             headers: {
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Origin': window.location.origin,
+                'X-Requested-With': 'XMLHttpRequest'
             }
         });
+        
+        if (response.status === 400) {
+            return { error: 'Erreur d\'authentification - Vérifiez vos identifiants' };
+        }
         
         if (!response.ok) {
             return { error: `Erreur de connexion (${response.status})` };
@@ -38,7 +45,9 @@ export const edt = async (classe, startdate, endate) => {
             mode: 'cors',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Origin': window.location.origin,
+                'X-Requested-With': 'XMLHttpRequest'
             }
         });
 
