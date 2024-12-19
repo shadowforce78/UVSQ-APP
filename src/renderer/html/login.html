@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self' http://127.0.0.1:5500/ http://saumondeluxe.ddns.net:63246/">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' http://127.0.0.1:5500/ http://saumondeluxe.ddns.net:63246/ https://saumondeluxe.ddns.net:63246/ https://cors-anywhere.herokuapp.com/">
     <title>Connexion - UVSQ APP</title>
     <link rel="stylesheet" href="../css/commun.css">
     <link rel="stylesheet" href="../css/login.css">
 </head>
+
 <body>
     <div class="login-container">
         <button id="themeToggle" class="theme-toggle">🌙</button>
@@ -30,4 +33,5 @@
     </div>
     <script type="module" src="../js/login.js"></script>
 </body>
+
 </html>
