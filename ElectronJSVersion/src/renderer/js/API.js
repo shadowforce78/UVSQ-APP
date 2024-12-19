@@ -1,4 +1,4 @@
-const apiURL = 'http://localhost:8000/';
+const apiURL = 'http://saumondeluxe.ddns.net:63246/';
 
 const connectionENDPOINT = (id, password) => `uvsq/bulletin/${id}+${password}`;
 const edtENDPOINT = (classe, startdate, endate) => `uvsq/edt/${classe}+${startdate}+${endate}`;
