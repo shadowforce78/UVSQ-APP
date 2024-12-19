@@ -37,10 +37,17 @@ jobs:
         zip -r ../../UVSQ-APP-linux-x64.zip ./
       shell: bash
 
+    - name: Generate Release Tag
+      id: tag
+      run: |
+        echo "tag_name=$(date +'v%Y.%m.%d-%H%M')" >> $GITHUB_OUTPUT
+      shell: bash
+
     - name: Create Release
       uses: softprops/action-gh-release@v1
       if: github.ref == 'refs/heads/main'
       with:
+        tag_name: ${{ steps.tag.outputs.tag_name }}
         files: |
           UVSQ-APP-win32-x64.zip
           UVSQ-APP-linux-x64.zip
