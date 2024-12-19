@@ -37,10 +37,15 @@ jobs:
         zip -r ../../UVSQ-APP-linux-x64.zip ./
       shell: bash
 
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      if: github.ref == 'refs/heads/main'
       with:
-        name: builds
-        path: |
+        files: |
           UVSQ-APP-win32-x64.zip
           UVSQ-APP-linux-x64.zip
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
