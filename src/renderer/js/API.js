@@ -8,10 +8,11 @@ export const connection = async (id, password) => {
     try {
         const response = await fetch(apiURL + connectionENDPOINT(id, password), {
             method: 'GET',
-            mode: 'cors',
-            credentials: 'same-origin',
+            mode:'no-cors',
+            credentials: 'omit',
             headers: {
                 'Accept': 'application/json',
+                'Origin': 'same-origin'
             }
         });
         
@@ -33,9 +34,10 @@ export const edt = async (classe, startdate, endate) => {
         const response = await fetch(apiURL + edtENDPOINT(classe, startdate, endate), {
             method: 'GET',
             mode: 'cors',
-            credentials: 'same-origin',
+            credentials: 'omit',
             headers: {
                 'Accept': 'application/json',
+                'Origin': 'same-origin'
             }
         });
 
