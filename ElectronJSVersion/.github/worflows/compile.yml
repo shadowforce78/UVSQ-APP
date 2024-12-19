@@ -1,0 +1,46 @@
+name: Build and Zip
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-and-zip:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16' # Utilisez la version de Node.js nécessaire pour votre projet.
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Run Build Command
+      run: npm run build
+
+    - name: Zip Windows Build
+      run: |
+        cd dist/UVSQ-APP-win32-x64
+        zip -r ../../UVSQ-APP-win32-x64.zip ./
+      shell: bash
+
+    - name: Zip Linux Build
+      run: |
+        cd dist/UVSQ-APP-linux-x64
+        zip -r ../../UVSQ-APP-linux-x64.zip ./
+      shell: bash
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: builds
+        path: |
+          UVSQ-APP-win32-x64.zip
+          UVSQ-APP-linux-x64.zip
