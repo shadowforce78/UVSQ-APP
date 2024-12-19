@@ -82,6 +82,7 @@ themeToggle.addEventListener('click', () => {
             }
         } catch (error) {
             console.error(error);
+            errorMessage.innerText = 'Erreur de connexion';
         }
     })
 })();
