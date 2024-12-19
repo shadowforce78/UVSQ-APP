@@ -39,6 +39,12 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     document.getElementById('absences').addEventListener('click', getAbscences);
 
+
+    function getSettings(){
+        window.location.href = 'settings.html';
+    }
+    document.getElementById('settings').addEventListener('click', getSettings);
+
     // Gestionnaire de déconnexion
     document.getElementById('logout').addEventListener('click', () => {
         localStorage.removeItem('userData');
