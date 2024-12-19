@@ -1,4 +1,3 @@
-
 const { app, BrowserWindow } = require('electron')
 const path = require('node:path')
 
@@ -9,12 +8,20 @@ const createWindow = () => {
     const win = new BrowserWindow({
         width: 800,
         height: 600,
+        autoHideMenuBar: true, // Cache automatiquement la barre de menu
+        menuBarVisible: false,  // S'assure que la barre de menu est initialement cachée
         webPreferences: {
             // Ajouter ces options pour gérer le cache
             partition: 'persist:main',
-            enableRemoteModule: true
+            enableRemoteModule: true,
+            // devTools: false // Désactive les DevTools
         }
     })
+
+    // Empêcher l'ouverture des DevTools même via le raccourci clavier
+    // win.webContents.on('devtools-opened', () => {
+    //     win.webContents.closeDevTools();
+    // });
 
     // Configurer le chemin du cache
     app.setPath('userData', userDataPath);
