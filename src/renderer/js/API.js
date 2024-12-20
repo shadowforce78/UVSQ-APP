@@ -1,17 +1,19 @@
-const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-const apiURL = 'http://saumondeluxe.ddns.net:63246/';
+const corsProxy = 'http://saumondeluxe.ddns.net:63244';
+const apiURL = 'http://saumondeluxe.ddns.net:63246';
 
 const connectionENDPOINT = (id, password) => {
-    // Encode special characters in password
     const encodedPassword = encodeURIComponent(password);
-    return `uvsq/bulletin/${id}+${encodedPassword}`;
+    return `/uvsq/bulletin/${encodeURIComponent(id)}+${encodedPassword}`;
 };
-const edtENDPOINT = (classe, startdate, endate) => `uvsq/edt/${classe}+${startdate}+${endate}`;
+
+const edtENDPOINT = (classe, startdate, endate) => 
+    `/uvsq/edt/${encodeURIComponent(classe)}+${startdate}+${endate}`;
 
 // Partie connection
 export const connection = async (id, password) => {
     try {
-        const response = await fetch(corsProxy + apiURL + connectionENDPOINT(id, password), {
+        const url = `${corsProxy}/${apiURL.replace('https://', '')}${connectionENDPOINT(id, password)}`;
+        const response = await fetch(url, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -40,7 +42,8 @@ export const connection = async (id, password) => {
 // Partie emploi du temps
 export const edt = async (classe, startdate, endate) => {
     try {
-        const response = await fetch(corsProxy + apiURL + edtENDPOINT(classe, startdate, endate), {
+        const url = `${corsProxy}/${apiURL.replace('https://', '')}${edtENDPOINT(classe, startdate, endate)}`;
+        const response = await fetch(url, {
             method: 'GET',
             mode: 'cors',
             headers: {
