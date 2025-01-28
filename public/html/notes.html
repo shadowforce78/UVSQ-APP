@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0d6efd">
+    <title>Relevé de notes - UVSQ</title>
+    <link rel="stylesheet" href="../css/notes.css">
+</head>
+<body>
+    <header class="page-header" role="banner">
+        <nav class="nav-buttons" role="navigation" aria-label="Navigation principale">
+            <div class="nav-group">
+                <button id="backButton" class="nav-button" aria-label="Retour au menu principal">
+                    <span aria-hidden="true">←</span> Retour
+                </button>
+                <button id="toggleView" class="nav-button" aria-label="Changer le mode d'affichage">
+                    Vue par ressource
+                </button>
+            </div>
+            <div class="nav-group">
+                <button id="themeToggle" class="nav-button" aria-label="Changer le thème">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content" role="main">
+        <div class="content-header">
+            <h1>Relevé de notes</h1>
+        </div>
+        <div id="grades-container" role="region" aria-label="Liste des UEs et notes"></div>
+        <div id="resources-container" role="region" aria-label="Liste des ressources" style="display: none;"></div>
+    </main>
+
+    <div id="detailModal" class="modal" role="dialog" aria-labelledby="detailModalTitle" aria-modal="true">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2 id="detailModalTitle"></h2>
+                <button class="close" aria-label="Fermer la fenêtre de détails">&times;</button>
+            </header>
+            <div id="modalContent" role="region"></div>
+        </div>
+    </div>
+
+    <div id="evaluationModal" class="modal" role="dialog" aria-labelledby="evaluationModalTitle" aria-modal="true">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2 id="evaluationModalTitle">Détails de l'évaluation</h2>
+                <button class="close evaluation-close" aria-label="Fermer la fenêtre d'évaluation">&times;</button>
+            </header>
+            <div id="evaluationModalContent" role="region"></div>
+        </div>
+    </div>
+
+    <script type="module" src="../js/notes.js"></script>
+</body>
+</html>
