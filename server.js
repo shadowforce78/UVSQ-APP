@@ -10,11 +10,11 @@ const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = 3000;
-const API_BASE_URL = 'http://saumondeluxe.ddns.net:63246';
+const API_BASE_URL = 'https://api.saumondeluxe.com';
 
 // Middleware CORS
 app.use(cors({
-    origin: 'http://saumondeluxe.ddns.net:63246', // Autorise ton front local
+    origin: 'https://api.saumondeluxe.com', // Mise à jour de l'origine CORS
 }));
 
 // Servir les fichiers statiques en premier
