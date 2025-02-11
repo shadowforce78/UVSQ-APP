@@ -1,6 +1,5 @@
 import express from 'express';
 import path from 'path';
-import cors from 'cors';
 import fetch from 'node-fetch';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -11,11 +10,6 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = 3000;
 const API_BASE_URL = 'https://api.saumondeluxe.com';
-
-// Middleware CORS
-app.use(cors({
-    origin: 'https://api.saumondeluxe.com', // Mise à jour de l'origine CORS
-}));
 
 // Servir les fichiers statiques en premier
 app.use(express.static(path.join(__dirname, 'public')));
